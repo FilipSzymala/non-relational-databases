@@ -21,7 +21,6 @@ public abstract class Operation {
         this.occurredAt = Objects.requireNonNull(occurredAt, "Operation timestamp must not be null");
         this.amount = Objects.requireNonNull(amount, "Operation amount must not be null");
         Objects.requireNonNull(amount.amount(), "Money amount must not be null");
-        Objects.requireNonNull(amount.currency(), "Money currency must not be null");
         if (amount.amount().signum() <= 0) {
             throw new IllegalArgumentException("Operation amount must be positive");
         }
