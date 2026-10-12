@@ -12,4 +12,5 @@ public interface AccountRepository {
     Optional<Account> findByAccountNumber(AccountNumber accountNumber);
     List<Account> findByOwnerId(UUID ownerId);
     void save(Account account);
+    void deleteById(UUID id);
 }

@@ -9,4 +9,5 @@ public interface ClientRepository {
     Optional<Client> findById(UUID id);
     Optional<Client> findByPersonalId(String personalId);
     void save(Client client);
+    void deleteById(UUID id);
 }
