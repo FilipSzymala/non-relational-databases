@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pl.nbd</groupId>
-    <artifactId>relational-model</artifactId>
+    <artifactId>non-relational-databases</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>model</module>
-        <module>repository</module>
+        <module>bank</module>
+        <module>infrastructure</module>
     </modules>
 
     <properties>
