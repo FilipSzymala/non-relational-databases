@@ -17,11 +17,17 @@ public class Client {
     private final List<Account> accounts = new ArrayList<>();
 
     public Client(UUID id, String firstName, String lastName, PersonalId personalId, Address address) {
-        this.id = id;
+        this.id = Objects.requireNonNull(id, "Client ID must not be null");
         this.firstName = requireNonBlank(firstName);
         this.lastName = requireNonBlank(lastName);
         this.personalId = Objects.requireNonNull(personalId);
         this.address = Objects.requireNonNull(address);
+    }
+
+    public Client(UUID id, String firstName, String lastName, PersonalId personalId,
+                  Address address, List<Account> accounts) {
+        this(id, firstName, lastName, personalId, address);
+        Objects.requireNonNull(accounts, "Accounts must not be null").forEach(this::addAccount);
     }
 
     public Client(String firstName, String lastName, PersonalId personalId, Address address) {
