@@ -4,11 +4,19 @@ import pl.nbd.bank.bank.account.enums.AccountStatus;
 import pl.nbd.bank.bank.account.enums.AccountTier;
 import pl.nbd.bank.bank.shared.Money;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
 public class PersonalAccount extends Account {
     private AccountTier tier;
+
+    public PersonalAccount(UUID id, UUID ownerId, Instant createdAt, AccountNumber accountNumber,
+                           Money balance, AccountStatus status, AccountTier tier) {
+        super(id, ownerId, createdAt, accountNumber, balance, status);
+        this.tier = Objects.requireNonNull(tier, "Tier must not be null");
+        validateInitialState();
+    }
 
     public PersonalAccount(UUID ownerId, AccountNumber accountNumber, Money balance,
                            AccountStatus status, AccountTier tier) {
@@ -16,6 +24,7 @@ public class PersonalAccount extends Account {
         this.tier = Objects.requireNonNull(tier, "Tier must not be null");
         validateInitialState();
     }
+
 
     public AccountTier getTier() {
         return tier;
