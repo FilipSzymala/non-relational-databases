@@ -16,6 +16,14 @@ public class Client {
     private Address address;
     private final List<Account> accounts = new ArrayList<>();
 
+    public Client(UUID id, String firstName, String lastName, PersonalId personalId, Address address) {
+        this.id = id;
+        this.firstName = requireNonBlank(firstName);
+        this.lastName = requireNonBlank(lastName);
+        this.personalId = Objects.requireNonNull(personalId);
+        this.address = Objects.requireNonNull(address);
+    }
+
     public Client(String firstName, String lastName, PersonalId personalId, Address address) {
         this.id = UUID.randomUUID();
         this.firstName = requireNonBlank(firstName);

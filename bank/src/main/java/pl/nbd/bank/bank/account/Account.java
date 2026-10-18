@@ -15,7 +15,23 @@ public abstract class Account {
     private Money balance;
     private AccountStatus status;
 
-    public Account(UUID ownerId, AccountNumber accountNumber, Money balance, AccountStatus status) {
+    protected Account(
+        UUID id,
+        UUID ownerId,
+        Instant createdAt,
+        AccountNumber accountNumber,
+        Money balance,
+        AccountStatus status
+    ) {
+        this.id = Objects.requireNonNull(id, "Account ID must not be null");
+        this.ownerId = Objects.requireNonNull(ownerId, "Owner ID must not be null");
+        this.createdAt = Objects.requireNonNull(createdAt, "Creation date must not be null");
+        this.accountNumber = Objects.requireNonNull(accountNumber, "Account number must not be null");
+        this.balance = Objects.requireNonNull(balance, "Balance must not be null");
+        this.status = Objects.requireNonNull(status, "Status must not be null");
+    }
+
+    protected Account(UUID ownerId, AccountNumber accountNumber, Money balance, AccountStatus status) {
         this.id = UUID.randomUUID();
         this.ownerId = Objects.requireNonNull(ownerId, "Owner ID must not be null");
         this.createdAt = Instant.now();
