@@ -1,6 +1,7 @@
 package pl.nbd.infrastructure.entities.account;
 
 import jakarta.persistence.*;
+import pl.nbd.infrastructure.entities.account.enums.AccountStatus;
 import pl.nbd.infrastructure.entities.client.ClientEntity;
 
 import java.math.BigDecimal;
@@ -25,11 +26,17 @@ public abstract class AccountEntity {
     @Embedded
     private AccountNumberEmbeddable accountNumber;
 
-    @Column(name = "balance", nullable = false)
+    @Column(
+        name = "balance",
+        nullable = false,
+        precision = 19,
+        scale = 2
+    )
     private BigDecimal balance;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status;
+    private AccountStatus status;
 
     protected AccountEntity() {
     }
@@ -63,7 +70,7 @@ public abstract class AccountEntity {
         return balance;
     }
 
-    public String getStatus() {
+    public AccountStatus getStatus() {
         return status;
     }
 
@@ -71,7 +78,7 @@ public abstract class AccountEntity {
         this.balance = balance;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AccountStatus status) {
         this.status = status;
     }
 }
