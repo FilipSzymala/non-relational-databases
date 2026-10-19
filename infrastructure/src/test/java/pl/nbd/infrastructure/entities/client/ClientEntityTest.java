@@ -1,11 +1,10 @@
-package pl.nbd.infrastructure.entities;
+package pl.nbd.infrastructure.entities.client;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.*;
-import pl.nbd.infrastructure.entities.client.ClientEntity;
 import pl.nbd.infrastructure.fixtures.ClientEntityFactory;
 
 import java.util.UUID;
@@ -35,6 +34,8 @@ public class ClientEntityTest {
     void afterEach() {
         if (em != null && em.isOpen()) {
             try {
+                em.getTransaction().commit();
+            } catch (Exception e) {
                 if (em.getTransaction().isActive()) {
                     em.getTransaction().rollback();
                 }

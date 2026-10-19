@@ -8,6 +8,8 @@
 
       <class>pl.nbd.infrastructure.entities.client.ClientEntity</class>
       <class>pl.nbd.infrastructure.entities.account.AccountEntity</class>
+      <class>pl.nbd.infrastructure.entities.account.SavingsAccountEntity</class>
+      <class>pl.nbd.infrastructure.entities.account.PersonalAccountEntity</class>
 
       <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

@@ -7,6 +7,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "accounts")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "account_type")
 public class AccountEntity {
     @Id
     private UUID id;
