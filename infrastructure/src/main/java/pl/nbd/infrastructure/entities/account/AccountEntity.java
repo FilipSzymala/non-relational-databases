@@ -25,6 +25,14 @@ public class AccountEntity {
         this.client = client;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public ClientEntity getClient() {
+        return client;
+    }
+
     public void setClient(ClientEntity client) {
         this.client = client;
     }

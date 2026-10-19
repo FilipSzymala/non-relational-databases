@@ -127,33 +127,34 @@ class AccountEntityTest {
         assertEquals(clientId, actualClientId);
     }
 
-//    @Test
-//    void shouldRemoveAccountWithoutRemovingClient() {
-//        UUID clientId = UUID.randomUUID();
-//        UUID accountId = UUID.randomUUID();
-//
-//        ClientEntity client = ClientEntityFactory.createClient(clientId);
-//        AccountEntity account = new AccountEntity(accountId, client);
-//
-//        em.persist(client);
-//        em.persist(account);
-//
-//        em.flush();
-//        em.clear();
-//
-//        AccountEntity managedAccount =
-//            em.find(AccountEntity.class, accountId);
-//
-//        assertNotNull(managedAccount);
-//
-//        em.remove(managedAccount);
-//
-//        em.flush();
-//        em.clear();
-//
-//        assertNull(em.find(AccountEntity.class, accountId));
-//        assertNotNull(em.find(ClientEntity.class, clientId));
-//    }
+    @Test
+    void shouldRemoveAccountWithoutRemovingClient() {
+        UUID clientId = UUID.randomUUID();
+        UUID accountId = UUID.randomUUID();
+
+        ClientEntity client = ClientEntityFactory.createClient(clientId);
+        AccountEntity account = new AccountEntity(accountId, client);
+
+        em.persist(client);
+        em.persist(account);
+
+        em.flush();
+        em.clear();
+
+        AccountEntity managedAccount =
+            em.find(AccountEntity.class, accountId);
+
+        assertNotNull(managedAccount);
+
+        em.remove(managedAccount);
+
+        em.flush();
+        em.clear();
+
+        assertNull(em.find(AccountEntity.class, accountId));
+        assertNotNull(em.find(ClientEntity.class, clientId));
+    }
+
 
     @Test
     void shouldReturnNullForNonExistingAccount() {

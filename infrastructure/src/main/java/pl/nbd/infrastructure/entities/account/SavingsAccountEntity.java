@@ -11,7 +11,7 @@ import java.util.UUID;
 @DiscriminatorValue("SAVINGS")
 public class SavingsAccountEntity extends AccountEntity {
 
-    @Column(name = "annual_interest_rate")
+    @Column(name = "annual_interest_rate", precision = 10, scale = 6)
     private BigDecimal annualInterestRate;
 
     @Column(name = "last_interest_calculation_date", length = 7)
