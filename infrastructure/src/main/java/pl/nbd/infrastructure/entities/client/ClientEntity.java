@@ -17,7 +17,7 @@ public class ClientEntity {
     @Column(name = "last_name", nullable = false)
     private String lastName;
     @Embedded
-    private PersonalIdEmbedable personalId;
+    private PersonalIdEmbeddable personalId;
     @Embedded
     private AddressEmbeddable address;
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
@@ -26,7 +26,7 @@ public class ClientEntity {
     protected ClientEntity() {
     }
 
-    public ClientEntity(UUID id, String firstName, String lastName, PersonalIdEmbedable personalId, AddressEmbeddable address) {
+    public ClientEntity(UUID id, String firstName, String lastName, PersonalIdEmbeddable personalId, AddressEmbeddable address) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -51,7 +51,7 @@ public class ClientEntity {
         return lastName;
     }
 
-    public PersonalIdEmbedable getPersonalId() {
+    public PersonalIdEmbeddable getPersonalId() {
         return personalId;
     }
 
@@ -71,7 +71,7 @@ public class ClientEntity {
         this.lastName = lastName;
     }
 
-    public void setPersonalId(PersonalIdEmbedable personalId) {
+    public void setPersonalId(PersonalIdEmbeddable personalId) {
         this.personalId = personalId;
     }
 
