@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SavingsAccountTest {
     private static SavingsAccount account(String balance, String annualRate, YearMonth lastMonth) {
-        return new SavingsAccount(UUID.randomUUID(), new AccountNumber(UUID.randomUUID().toString()),
+        return new SavingsAccount(UUID.randomUUID(), new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333"),
                 Money.pln(balance), AccountStatus.ACTIVE, new BigDecimal(annualRate), lastMonth);
     }
 

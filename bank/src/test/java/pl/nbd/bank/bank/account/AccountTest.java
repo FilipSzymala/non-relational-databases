@@ -16,7 +16,7 @@ class AccountTest {
     private static final UUID ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
     private static final UUID OWNER = UUID.fromString("22222222-2222-2222-2222-222222222222");
     private static final Instant TIME = Instant.parse("2024-03-01T10:20:30Z");
-    private static final AccountNumber NUMBER = new AccountNumber("12345678901234567890123456");
+    private static final AccountNumber NUMBER = new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333");
 
     private static PersonalAccount restored(UUID id, UUID owner, Instant createdAt, AccountNumber number,
                                              Money balance, AccountStatus status, AccountTier tier) {
@@ -127,6 +127,7 @@ class AccountTest {
     void accountNumberMustNotBeBlank() {
         assertThrows(IllegalArgumentException.class, () -> new AccountNumber(null));
         assertThrows(IllegalArgumentException.class, () -> new AccountNumber("  "));
-        assertEquals("ABC", new AccountNumber("ABC").number());
+        String aN = "1111111111111111111111111111111111111111111111111111111111113333";
+        assertEquals(aN, new AccountNumber(aN).number());
     }
 }

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PersonalAccountTest {
     private static PersonalAccount account(String balance, AccountTier tier) {
-        return new PersonalAccount(UUID.randomUUID(), new AccountNumber(UUID.randomUUID().toString()),
+        return new PersonalAccount(UUID.randomUUID(), new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333"),
                 Money.pln(balance), AccountStatus.ACTIVE, tier);
     }
 

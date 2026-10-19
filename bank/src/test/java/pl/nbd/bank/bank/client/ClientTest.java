@@ -23,7 +23,7 @@ class ClientTest {
     }
 
     private static Account account(UUID ownerId) {
-        return new PersonalAccount(ownerId, new AccountNumber(UUID.randomUUID().toString()),
+        return new PersonalAccount(ownerId, new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333"),
                 Money.ZERO, AccountStatus.ACTIVE, AccountTier.DEFAULT);
     }
 
