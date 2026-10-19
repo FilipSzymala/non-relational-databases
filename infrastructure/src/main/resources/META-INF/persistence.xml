@@ -10,6 +10,11 @@
       <class>pl.nbd.infrastructure.entities.account.AccountEntity</class>
       <class>pl.nbd.infrastructure.entities.account.SavingsAccountEntity</class>
       <class>pl.nbd.infrastructure.entities.account.PersonalAccountEntity</class>
+      <class>pl.nbd.infrastructure.entities.operation.AtmDepositEntity</class>
+      <class>pl.nbd.infrastructure.entities.operation.AtmWithdrawEntity</class>
+      <class>pl.nbd.infrastructure.entities.operation.InterestCapitalizationEntity</class>
+      <class>pl.nbd.infrastructure.entities.operation.OperationEntity</class>
+      <class>pl.nbd.infrastructure.entities.operation.TransferEntity</class>
 
       <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
