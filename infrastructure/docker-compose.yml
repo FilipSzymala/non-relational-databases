@@ -5,7 +5,7 @@ services:
     image: postgres:19rc1-alpine
     restart: always
     environment:
-      POSTGRES_DB: nbd_db
+      POSTGRES_DB: nbd_bank_db
       POSTGRES_USER: nbd
       POSTGRES_PASSWORD: nbdpassword
     ports:
