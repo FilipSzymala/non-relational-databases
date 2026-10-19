@@ -9,6 +9,9 @@ import pl.nbd.infrastructure.entities.account.SavingsAccountEntity;
 import pl.nbd.infrastructure.entities.client.ClientEntity;
 import pl.nbd.infrastructure.fixtures.ClientEntityFactory;
 
+import pl.nbd.infrastructure.entities.account.AccountNumberEmbeddable;
+import pl.nbd.infrastructure.entities.account.enums.AccountStatus;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.YearMonth;
@@ -59,7 +62,14 @@ class InterestCapitalizationEntityTest {
     }
 
     private SavingsAccountEntity addSavingsAccount(ClientEntity client) {
-        SavingsAccountEntity account = SavingsAccountEntity.create(UUID.randomUUID(), client, new BigDecimal("0.012"), YearMonth.of(2026, 9));
+        UUID accountId = UUID.randomUUID();
+        SavingsAccountEntity account = SavingsAccountEntity.create(
+            accountId, client,
+            Instant.parse("2026-10-19T10:00:00Z"),
+            new AccountNumberEmbeddable("PL" + accountId.toString().replace("-", "")),
+            new BigDecimal("1000.00"), AccountStatus.ACTIVE,
+            new BigDecimal("0.012"), YearMonth.of(2026, 9)
+        );
         client.addAccount(account);
         return account;
     }

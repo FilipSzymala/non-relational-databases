@@ -8,8 +8,12 @@ import org.junit.jupiter.api.*;
 import pl.nbd.infrastructure.entities.client.ClientEntity;
 import pl.nbd.infrastructure.fixtures.ClientEntityFactory;
 
+import pl.nbd.infrastructure.entities.account.enums.AccountStatus;
+import pl.nbd.infrastructure.entities.account.enums.AccountTier;
+
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,7 +63,12 @@ public class AccountEntityTest {
         UUID accountId = UUID.randomUUID();
 
         ClientEntity client = ClientEntityFactory.createClient(clientId);
-        AccountEntity account = PersonalAccountEntity.create(accountId, client, "GOLD");
+        AccountEntity account = PersonalAccountEntity.create(
+            accountId, client,
+            Instant.parse("2026-10-19T10:00:00Z"),
+            new AccountNumberEmbeddable("PL" + accountId.toString().replace("-", "")),
+            new BigDecimal("1000.00"), AccountStatus.ACTIVE, AccountTier.GOLD
+        );
 
         em.persist(client);
         em.persist(account);
@@ -72,6 +81,10 @@ public class AccountEntityTest {
         assertNotNull(found);
         assertNotSame(account, found);
         assertTrue(em.contains(found));
+        assertEquals(Instant.parse("2026-10-19T10:00:00Z"), found.getCreatedAt());
+        assertEquals("PL" + accountId.toString().replace("-", ""), found.getAccountNumber().getAccountNumber());
+        assertEquals(0, new BigDecimal("1000.00").compareTo(found.getBalance()));
+        assertEquals(AccountStatus.ACTIVE, found.getStatus());
     }
 
     @Test
@@ -83,8 +96,19 @@ public class AccountEntityTest {
 
         ClientEntity client = ClientEntityFactory.createClient(clientId);
 
-        PersonalAccountEntity account1 = PersonalAccountEntity.create(accountId1, client, "GOLD");
-        AccountEntity account2 = SavingsAccountEntity.create(accountId2, client, interestRate, YearMonth.of(2023, 1));
+        PersonalAccountEntity account1 = PersonalAccountEntity.create(
+            accountId1, client,
+            Instant.parse("2026-10-19T10:00:00Z"),
+            new AccountNumberEmbeddable("PL" + accountId1.toString().replace("-", "")),
+            new BigDecimal("1000.00"), AccountStatus.ACTIVE, AccountTier.GOLD
+        );
+        AccountEntity account2 = SavingsAccountEntity.create(
+            accountId2, client,
+            Instant.parse("2026-10-19T10:00:00Z"),
+            new AccountNumberEmbeddable("PL" + accountId2.toString().replace("-", "")),
+            new BigDecimal("1000.00"), AccountStatus.ACTIVE,
+            interestRate, YearMonth.of(2023, 1)
+        );
 
         client.addAccount(account1);
         client.addAccount(account2);
@@ -110,7 +134,12 @@ public class AccountEntityTest {
         UUID accountId = UUID.randomUUID();
 
         ClientEntity client = ClientEntityFactory.createClient(clientId);
-        AccountEntity account = PersonalAccountEntity.create(accountId, client, "GOLD");
+        AccountEntity account = PersonalAccountEntity.create(
+            accountId, client,
+            Instant.parse("2026-10-19T10:00:00Z"),
+            new AccountNumberEmbeddable("PL" + accountId.toString().replace("-", "")),
+            new BigDecimal("1000.00"), AccountStatus.ACTIVE, AccountTier.GOLD
+        );
 
         em.persist(client);
         em.persist(account);
@@ -135,7 +164,12 @@ public class AccountEntityTest {
         UUID accountId = UUID.randomUUID();
 
         ClientEntity client = ClientEntityFactory.createClient(clientId);
-        AccountEntity account = PersonalAccountEntity.create(accountId, client, "GOLD");
+        AccountEntity account = PersonalAccountEntity.create(
+            accountId, client,
+            Instant.parse("2026-10-19T10:00:00Z"),
+            new AccountNumberEmbeddable("PL" + accountId.toString().replace("-", "")),
+            new BigDecimal("1000.00"), AccountStatus.ACTIVE, AccountTier.GOLD
+        );
 
         em.persist(client);
         em.persist(account);

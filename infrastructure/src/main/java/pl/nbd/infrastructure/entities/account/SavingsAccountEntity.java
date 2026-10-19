@@ -2,9 +2,11 @@ package pl.nbd.infrastructure.entities.account;
 
 import jakarta.persistence.*;
 import pl.nbd.infrastructure.entities.client.ClientEntity;
+import pl.nbd.infrastructure.entities.account.enums.AccountStatus;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -21,14 +23,21 @@ public class SavingsAccountEntity extends AccountEntity {
         super();
     }
 
-    private SavingsAccountEntity(UUID id, ClientEntity client, BigDecimal annualInterestRate, YearMonth lastInterestCalculationDate) {
-        super(id, client);
+    private SavingsAccountEntity(UUID id, ClientEntity client, Instant createdAt,
+                                 AccountNumberEmbeddable accountNumber, BigDecimal balance,
+                                 AccountStatus status, BigDecimal annualInterestRate,
+                                 YearMonth lastInterestCalculationDate) {
+        super(id, client, createdAt, accountNumber, balance, status);
         this.annualInterestRate = annualInterestRate;
         this.lastInterestCalculationDate = lastInterestCalculationDate;
     }
 
-    public static SavingsAccountEntity create(UUID id, ClientEntity client, BigDecimal annualInterestRate, YearMonth lastInterestCalculationDate) {
-        return new SavingsAccountEntity(id, client, annualInterestRate, lastInterestCalculationDate);
+    public static SavingsAccountEntity create(UUID id, ClientEntity client, Instant createdAt,
+                                              AccountNumberEmbeddable accountNumber, BigDecimal balance,
+                                              AccountStatus status, BigDecimal annualInterestRate,
+                                              YearMonth lastInterestCalculationDate) {
+        return new SavingsAccountEntity(id, client, createdAt, accountNumber, balance, status,
+                                        annualInterestRate, lastInterestCalculationDate);
     }
 
     public BigDecimal getAnnualInterestRate() {

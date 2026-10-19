@@ -41,9 +41,15 @@ public abstract class AccountEntity {
     protected AccountEntity() {
     }
 
-    public AccountEntity(UUID id, ClientEntity client) {
+    protected AccountEntity(UUID id, ClientEntity client, Instant createdAt,
+                            AccountNumberEmbeddable accountNumber, BigDecimal balance,
+                            AccountStatus status) {
         this.id = id;
         this.client = client;
+        this.createdAt = createdAt;
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.status = status;
     }
 
     public UUID getId() {

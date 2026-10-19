@@ -2,8 +2,11 @@ package pl.nbd.infrastructure.entities.account;
 
 import jakarta.persistence.*;
 import pl.nbd.infrastructure.entities.account.enums.AccountTier;
+import pl.nbd.infrastructure.entities.account.enums.AccountStatus;
 import pl.nbd.infrastructure.entities.client.ClientEntity;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -17,13 +20,17 @@ public class PersonalAccountEntity extends AccountEntity {
         super();
     }
 
-    private PersonalAccountEntity(UUID id, ClientEntity client, AccountTier tier) {
-        super(id, client);
+    private PersonalAccountEntity(UUID id, ClientEntity client, Instant createdAt,
+                                  AccountNumberEmbeddable accountNumber, BigDecimal balance,
+                                  AccountStatus status, AccountTier tier) {
+        super(id, client, createdAt, accountNumber, balance, status);
         this.tier = tier;
     }
 
-    public static PersonalAccountEntity create(UUID id, ClientEntity client, AccountTier tier) {
-        return new PersonalAccountEntity(id, client, tier);
+    public static PersonalAccountEntity create(UUID id, ClientEntity client, Instant createdAt,
+                                               AccountNumberEmbeddable accountNumber, BigDecimal balance,
+                                               AccountStatus status, AccountTier tier) {
+        return new PersonalAccountEntity(id, client, createdAt, accountNumber, balance, status, tier);
     }
 
     public AccountTier getTier() {

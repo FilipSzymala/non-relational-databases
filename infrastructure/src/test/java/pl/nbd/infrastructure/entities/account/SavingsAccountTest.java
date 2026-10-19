@@ -7,8 +7,11 @@ import org.junit.jupiter.api.*;
 import pl.nbd.infrastructure.entities.client.ClientEntity;
 import pl.nbd.infrastructure.fixtures.ClientEntityFactory;
 
+import pl.nbd.infrastructure.entities.account.enums.AccountStatus;
+
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,9 +35,12 @@ public class SavingsAccountTest {
     void afterEach() {
         if (em != null && em.isOpen()) {
             try {
+                em.getTransaction().commit();
+            } catch (Exception e) {
                 if (em.getTransaction().isActive()) {
                     em.getTransaction().rollback();
                 }
+                throw e;
             } finally {
                 em.close();
             }
@@ -58,7 +64,13 @@ public class SavingsAccountTest {
 
         ClientEntity client = ClientEntityFactory.createClient(clientId);
 
-        SavingsAccountEntity account = SavingsAccountEntity.create(accountId, client, interestRate, calculationDate);
+        SavingsAccountEntity account = SavingsAccountEntity.create(
+            accountId, client,
+            Instant.parse("2026-10-19T10:00:00Z"),
+            new AccountNumberEmbeddable("PL" + accountId.toString().replace("-", "")),
+            new BigDecimal("1000.00"), AccountStatus.ACTIVE,
+            interestRate, calculationDate
+        );
 
         client.addAccount(account);
 
@@ -74,6 +86,11 @@ public class SavingsAccountTest {
         SavingsAccountEntity savings = (SavingsAccountEntity) found;
 
         assertEquals(accountId, savings.getId());
+        assertEquals(Instant.parse("2026-10-19T10:00:00Z"), savings.getCreatedAt());
+        assertEquals("PL" + accountId.toString().replace("-", ""),
+                savings.getAccountNumber().getAccountNumber());
+        assertEquals(0, new BigDecimal("1000.00").compareTo(savings.getBalance()));
+        assertEquals(AccountStatus.ACTIVE, savings.getStatus());
 
         assertEquals(0, interestRate.compareTo(savings.getAnnualInterestRate()));
 
