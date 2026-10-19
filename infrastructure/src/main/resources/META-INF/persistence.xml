@@ -20,7 +20,7 @@
 
       <properties>
           <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-          <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/postgres"/>
+          <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/nbd_bank_db"/>
           <property name="hibernate.connection.username" value="nbd"/>
           <property name="hibernate.connection.password" value="nbdpassword"/>
           <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />

@@ -15,7 +15,7 @@ public final class ClientEntityFactory {
     }
 
     public static ClientEntity createClient(UUID id) {
-        PersonalIdEmbedable personalId = new PersonalIdEmbedable("1234567890");
+        PersonalIdEmbedable personalId = new PersonalIdEmbedable("12345678901");
         AddressEmbeddable address = new AddressEmbeddable(
             "Polska",
             "Płock",

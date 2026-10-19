@@ -9,7 +9,7 @@ import java.util.UUID;
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "account_type")
-public class AccountEntity {
+public abstract class AccountEntity {
     @Id
     private UUID id;
 

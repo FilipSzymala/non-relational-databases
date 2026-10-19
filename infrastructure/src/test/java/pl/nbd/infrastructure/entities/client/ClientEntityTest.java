@@ -74,8 +74,6 @@ public class ClientEntityTest {
         UUID clientId = UUID.randomUUID();
         ClientEntity client = createClient(clientId);
 
-        EntityTransaction tx = em.getTransaction();
-
         em.persist(client);
         em.flush();
         em.clear();
@@ -88,7 +86,7 @@ public class ClientEntityTest {
 
         assertEquals("Płock", found.getAddress().getCity());
         assertEquals("Komendancka", found.getAddress().getStreet());
-        assertEquals("1234567890", found.getPersonalId().getPersonalId());
+        assertEquals("12345678901", found.getPersonalId().getPersonalId());
     }
 
     @Test

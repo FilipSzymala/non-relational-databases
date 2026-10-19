@@ -8,11 +8,13 @@ import org.junit.jupiter.api.*;
 import pl.nbd.infrastructure.entities.client.ClientEntity;
 import pl.nbd.infrastructure.fixtures.ClientEntityFactory;
 
+import java.math.BigDecimal;
+import java.time.YearMonth;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class AccountEntityTest {
+public class AccountEntityTest {
     private static EntityManagerFactory emf;
     private EntityManager em;
 
@@ -57,7 +59,7 @@ public abstract class AccountEntityTest {
         UUID accountId = UUID.randomUUID();
 
         ClientEntity client = ClientEntityFactory.createClient(clientId);
-        AccountEntity account = new AccountEntity(accountId, client);
+        AccountEntity account = PersonalAccountEntity.create(accountId, client, "GOLD");
 
         em.persist(client);
         em.persist(account);
@@ -77,11 +79,12 @@ public abstract class AccountEntityTest {
         UUID clientId = UUID.randomUUID();
         UUID accountId1 = UUID.randomUUID();
         UUID accountId2 = UUID.randomUUID();
+        BigDecimal interestRate = new BigDecimal("0.042");
 
         ClientEntity client = ClientEntityFactory.createClient(clientId);
 
-        AccountEntity account1 = new AccountEntity(accountId1, client);
-        AccountEntity account2 = new AccountEntity(accountId2, client);
+        PersonalAccountEntity account1 = PersonalAccountEntity.create(accountId1, client, "GOLD");
+        AccountEntity account2 = SavingsAccountEntity.create(accountId2, client, interestRate, YearMonth.of(2023, 1));
 
         client.addAccount(account1);
         client.addAccount(account2);
@@ -107,7 +110,7 @@ public abstract class AccountEntityTest {
         UUID accountId = UUID.randomUUID();
 
         ClientEntity client = ClientEntityFactory.createClient(clientId);
-        AccountEntity account = new AccountEntity(accountId, client);
+        AccountEntity account = PersonalAccountEntity.create(accountId, client, "GOLD");
 
         em.persist(client);
         em.persist(account);
@@ -132,7 +135,7 @@ public abstract class AccountEntityTest {
         UUID accountId = UUID.randomUUID();
 
         ClientEntity client = ClientEntityFactory.createClient(clientId);
-        AccountEntity account = new AccountEntity(accountId, client);
+        AccountEntity account = PersonalAccountEntity.create(accountId, client, "GOLD");
 
         em.persist(client);
         em.persist(account);
