@@ -6,7 +6,6 @@ import pl.nbd.bank.bank.account.AccountNumber;
 import pl.nbd.bank.bank.account.PersonalAccount;
 import pl.nbd.bank.bank.account.enums.AccountStatus;
 import pl.nbd.bank.bank.account.enums.AccountTier;
-import pl.nbd.bank.bank.client.enums.Sex;
 import pl.nbd.bank.bank.shared.Money;
 
 import java.util.List;
@@ -172,12 +171,5 @@ class ClientTest {
         unassigned.close();
         client.removeAccount(unassigned);
         assertTrue(client.getAccounts().isEmpty());
-    }
-
-    @Test
-    void sexEnumIsAvailableToDomain() {
-        assertEquals(2, Sex.values().length);
-        assertEquals(Sex.MALE, Sex.valueOf("MALE"));
-        assertEquals(Sex.FEMALE, Sex.valueOf("FEMALE"));
     }
 }

@@ -7,5 +7,10 @@ public record AccountNumber(String number) {
                 "Account number must not be blank"
             );
         }
+        if (number.length() != 64) {
+            throw new IllegalArgumentException(
+                "Account number must be 64 characters long"
+            );
+        }
     }
 }
