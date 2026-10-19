@@ -2,7 +2,7 @@ package pl.nbd.infrastructure.fixtures;
 
 import pl.nbd.infrastructure.entities.client.AddressEmbeddable;
 import pl.nbd.infrastructure.entities.client.ClientEntity;
-import pl.nbd.infrastructure.entities.client.PersonalIdEmbedable;
+import pl.nbd.infrastructure.entities.client.PersonalIdEmbeddable;
 
 import java.util.UUID;
 
@@ -15,7 +15,7 @@ public final class ClientEntityFactory {
     }
 
     public static ClientEntity createClient(UUID id) {
-        PersonalIdEmbedable personalId = new PersonalIdEmbedable("12345678901");
+        PersonalIdEmbeddable personalId = new PersonalIdEmbeddable("12345678901");
         AddressEmbeddable address = new AddressEmbeddable(
             "Polska",
             "Płock",

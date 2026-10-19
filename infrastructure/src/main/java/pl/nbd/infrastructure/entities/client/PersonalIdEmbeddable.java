@@ -4,14 +4,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class PersonalIdEmbedable {
+public class PersonalIdEmbeddable {
     @Column(name = "personal_id", nullable = false, length = 11)
     private String personalId;
 
-    protected PersonalIdEmbedable() {
+    protected PersonalIdEmbeddable() {
     }
 
-    public PersonalIdEmbedable(String personalId) {
+    public PersonalIdEmbeddable(String personalId) {
         this.personalId = personalId;
     }
 
