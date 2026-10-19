@@ -14,4 +14,8 @@ public class PersonalIdEmbedable {
     public PersonalIdEmbedable(String personalId) {
         this.personalId = personalId;
     }
+
+    public String getPersonalId() {
+        return personalId;
+    }
 }

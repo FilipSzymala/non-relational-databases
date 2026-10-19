@@ -3,57 +3,138 @@ package pl.nbd.infrastructure.entities;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.*;
-import pl.nbd.infrastructure.entities.client.AddressEmbeddable;
 import pl.nbd.infrastructure.entities.client.ClientEntity;
-import pl.nbd.infrastructure.entities.client.PersonalIdEmbedable;
-import pl.nbd.infrastructure.util.JpaBootstrap;
+import pl.nbd.infrastructure.fixtures.ClientEntityFactory;
 
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static pl.nbd.infrastructure.fixtures.ClientEntityFactory.createClient;
 
 public class ClientEntityTest {
     private static EntityManagerFactory emf;
     private EntityManager em;
 
     @BeforeAll
-    static void initFactory() {
-        emf = JpaBootstrap.getEntityManagerFactory();
+    static void beforeAll() {
+        emf = Persistence.createEntityManagerFactory(
+            "POSTGRES_NBD_BANK_PU"
+        );
     }
 
     @BeforeEach
-    void setUp() {
+    void beforeEach() {
         em = emf.createEntityManager();
+
+        em.getTransaction().begin();
     }
 
     @AfterEach
-    void tearDown() {
-        em.close();
+    void afterEach() {
+        if (em != null && em.isOpen()) {
+            try {
+                if (em.getTransaction().isActive()) {
+                    em.getTransaction().rollback();
+                }
+            } finally {
+                em.close();
+            }
+        }
     }
 
     @AfterAll
-    static void closeFactory() {
-        emf.close();
+    static void afterAll() {
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
     }
 
     @Test
-    void persistClientEntity() {
-        UUID id = UUID.randomUUID();
-        PersonalIdEmbedable personalId = new PersonalIdEmbedable("1234567890");
-        AddressEmbeddable address = new AddressEmbeddable("Polska", "Płock", "Komendancka", "60", "12", "12-321");
-        ClientEntity clientEntity = new ClientEntity(id, "Kamil", "Kowalenko", personalId, address);
+    void shouldPersistClient() {
+        UUID clientId = UUID.randomUUID();
+        ClientEntity client = ClientEntityFactory.createClient(clientId);
+
+        em.persist(client);
+        em.flush();
+        em.clear();
+
+        ClientEntity found = em.find(ClientEntity.class, clientId);
+
+        assertNotNull(found);
+        assertEquals(clientId, found.getId());
+        assertEquals("Kamil", found.getFirstName());
+        assertEquals("Kowalenko", found.getLastName());
+    }
+
+    @Test
+    void shouldPersistEmbeddedValues() {
+        UUID clientId = UUID.randomUUID();
+        ClientEntity client = createClient(clientId);
+
         EntityTransaction tx = em.getTransaction();
 
-        try {
-            tx.begin();
-            em.persist(clientEntity);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
-            throw e;
-        }
+        em.persist(client);
+        em.flush();
+        em.clear();
 
-        em.contains(clientEntity);
+        ClientEntity found = em.find(ClientEntity.class, clientId);
+
+        assertNotNull(found);
+        assertNotNull(found.getAddress());
+        assertNotNull(found.getPersonalId());
+
+        assertEquals("Płock", found.getAddress().getCity());
+        assertEquals("Komendancka", found.getAddress().getStreet());
+        assertEquals("1234567890", found.getPersonalId().getPersonalId());
     }
+
+    @Test
+    void shouldUpdateClient() {
+        UUID clientId = UUID.randomUUID();
+        ClientEntity client = createClient(clientId);
+
+        em.persist(client);
+        em.flush();
+        em.clear();
+
+        ClientEntity managed = em.find(ClientEntity.class, clientId);
+
+        assertNotNull(managed);
+
+        managed.setLastName("Nowak");
+
+        em.flush();
+        em.clear();
+
+        ClientEntity updated = em.find(ClientEntity.class, clientId);
+
+        assertNotNull(updated);
+        assertEquals("Nowak", updated.getLastName());
+    }
+
+    @Test
+    void shouldRemoveClient() {
+        UUID clientId = UUID.randomUUID();
+        ClientEntity client = createClient(clientId);
+
+        em.persist(client);
+        em.flush();
+        em.clear();
+
+        ClientEntity managed = em.find(ClientEntity.class, clientId);
+
+        assertNotNull(managed);
+
+        em.remove(managed);
+        em.flush();
+        em.clear();
+
+        ClientEntity removed = em.find(ClientEntity.class, clientId);
+
+        assertNull(removed);
+    }
+
+
 }

@@ -1,0 +1,29 @@
+package pl.nbd.infrastructure.entities.account;
+
+import jakarta.persistence.*;
+import pl.nbd.infrastructure.entities.client.ClientEntity;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "accounts")
+public class AccountEntity {
+    @Id
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", nullable = false)
+    private ClientEntity client;
+
+    protected AccountEntity() {
+    }
+
+    public AccountEntity(UUID id, ClientEntity client) {
+        this.id = id;
+        this.client = client;
+    }
+
+    public void setClient(ClientEntity client) {
+        this.client = client;
+    }
+}

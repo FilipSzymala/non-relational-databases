@@ -1,7 +1,10 @@
 package pl.nbd.infrastructure.entities.client;
 
 import jakarta.persistence.*;
+import pl.nbd.infrastructure.entities.account.AccountEntity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,6 +20,8 @@ public class ClientEntity {
     private PersonalIdEmbedable personalId;
     @Embedded
     private AddressEmbeddable address;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
+    private List<AccountEntity> accounts = new ArrayList<>();
 
     protected ClientEntity() {
     }
@@ -29,4 +34,48 @@ public class ClientEntity {
         this.address = address;
     }
 
+    public void addAccount(AccountEntity account) {
+        accounts.add(account);
+        account.setClient(this);
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public PersonalIdEmbedable getPersonalId() {
+        return personalId;
+    }
+
+    public AddressEmbeddable getAddress() {
+        return address;
+    }
+
+    public List<AccountEntity> getAccounts() {
+        return accounts;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setPersonalId(PersonalIdEmbedable personalId) {
+        this.personalId = personalId;
+    }
+
+    public void setAddress(AddressEmbeddable address) {
+        this.address = address;
+    }
 }

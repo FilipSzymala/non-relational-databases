@@ -37,4 +37,28 @@ public class AddressEmbeddable {
         this.apartmentNumber = apartmentNumber;
         this.zipCode = zipCode;
     }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public String getStreetNumber() {
+        return streetNumber;
+    }
+
+    public String getApartmentNumber() {
+        return apartmentNumber;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
 }
