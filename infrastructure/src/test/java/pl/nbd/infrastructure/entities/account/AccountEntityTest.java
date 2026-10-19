@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AccountEntityTest {
+public abstract class AccountEntityTest {
 
     private static EntityManagerFactory emf;
     private EntityManager em;
