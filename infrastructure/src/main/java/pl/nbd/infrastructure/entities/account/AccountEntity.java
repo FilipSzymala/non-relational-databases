@@ -68,7 +68,7 @@ public abstract class AccountEntity {
         return createdAt;
     }
 
-    public AccountNumberEmbeddable getAccountNumber() {
+    public AccountNumberEmbeddable getAccountNumberEmbeddable() {
         return accountNumber;
     }
 

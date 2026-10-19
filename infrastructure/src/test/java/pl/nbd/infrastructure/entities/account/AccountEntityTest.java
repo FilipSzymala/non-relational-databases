@@ -82,7 +82,7 @@ public class AccountEntityTest {
         assertNotSame(account, found);
         assertTrue(em.contains(found));
         assertEquals(Instant.parse("2026-10-19T10:00:00Z"), found.getCreatedAt());
-        assertEquals("PL" + accountId.toString().replace("-", ""), found.getAccountNumber().getAccountNumber());
+        assertEquals("PL" + accountId.toString().replace("-", ""), found.getAccountNumberEmbeddable().getAccountNumber());
         assertEquals(0, new BigDecimal("1000.00").compareTo(found.getBalance()));
         assertEquals(AccountStatus.ACTIVE, found.getStatus());
     }

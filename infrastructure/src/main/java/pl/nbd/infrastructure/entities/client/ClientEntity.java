@@ -51,11 +51,11 @@ public class ClientEntity {
         return lastName;
     }
 
-    public PersonalIdEmbeddable getPersonalId() {
+    public PersonalIdEmbeddable getPersonalIdEmbeddable() {
         return personalId;
     }
 
-    public AddressEmbeddable getAddress() {
+    public AddressEmbeddable getAddressEmbeddable() {
         return address;
     }
 

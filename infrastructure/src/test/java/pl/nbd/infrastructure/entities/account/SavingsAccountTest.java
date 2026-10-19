@@ -88,7 +88,7 @@ public class SavingsAccountTest {
         assertEquals(accountId, savings.getId());
         assertEquals(Instant.parse("2026-10-19T10:00:00Z"), savings.getCreatedAt());
         assertEquals("PL" + accountId.toString().replace("-", ""),
-                savings.getAccountNumber().getAccountNumber());
+                savings.getAccountNumberEmbeddable().getAccountNumber());
         assertEquals(0, new BigDecimal("1000.00").compareTo(savings.getBalance()));
         assertEquals(AccountStatus.ACTIVE, savings.getStatus());
 

@@ -84,7 +84,7 @@ public class PersonalAccountEntityTest {
         assertEquals(accountId, personal.getId());
         assertEquals(Instant.parse("2026-10-19T10:00:00Z"), personal.getCreatedAt());
         assertEquals("PL" + accountId.toString().replace("-", ""),
-                personal.getAccountNumber().getAccountNumber());
+                personal.getAccountNumberEmbeddable().getAccountNumber());
         assertEquals(0, new BigDecimal("1000.00").compareTo(personal.getBalance()));
         assertEquals(AccountStatus.ACTIVE, personal.getStatus());
         assertEquals(AccountTier.GOLD, personal.getTier());

@@ -2,7 +2,6 @@ package pl.nbd.infrastructure.entities.client;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.*;
 import pl.nbd.infrastructure.fixtures.ClientEntityFactory;
@@ -81,12 +80,12 @@ public class ClientEntityTest {
         ClientEntity found = em.find(ClientEntity.class, clientId);
 
         assertNotNull(found);
-        assertNotNull(found.getAddress());
-        assertNotNull(found.getPersonalId());
+        assertNotNull(found.getAddressEmbeddable());
+        assertNotNull(found.getPersonalIdEmbeddable());
 
-        assertEquals("Płock", found.getAddress().getCity());
-        assertEquals("Komendancka", found.getAddress().getStreet());
-        assertEquals("12345678901", found.getPersonalId().getPersonalId());
+        assertEquals("Płock", found.getAddressEmbeddable().getCity());
+        assertEquals("Komendancka", found.getAddressEmbeddable().getStreet());
+        assertEquals("12345678901", found.getPersonalIdEmbeddable().getPersonalId());
     }
 
     @Test
