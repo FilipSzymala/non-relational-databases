@@ -71,8 +71,8 @@ class JpaAccountRepositoryAdapterTest {
         UUID personalId = UUID.randomUUID();
         UUID savingsId = UUID.randomUUID();
         Instant createdAt = Instant.parse("2026-10-19T09:00:00Z");
-        AccountNumber personalNumber = new AccountNumber("PL-PERSONAL-" + personalId);
-        AccountNumber savingsNumber = new AccountNumber("PL-SAVINGS-" + savingsId);
+        AccountNumber personalNumber = new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333");
+        AccountNumber savingsNumber = new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333");
 
         PersonalAccount personal = new PersonalAccount(personalId, ownerId, createdAt, personalNumber,
             Money.pln("500.00"), AccountStatus.ACTIVE, AccountTier.GOLD);
@@ -103,7 +103,7 @@ class JpaAccountRepositoryAdapterTest {
         UUID ownerId = persistClient("12345678905");
         UUID accountId = UUID.randomUUID();
         PersonalAccount account = new PersonalAccount(accountId, ownerId, Instant.parse("2026-10-19T10:00:00Z"),
-            new AccountNumber("PL-UPDATE-" + accountId), Money.pln("1000.00"),
+            new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333"), Money.pln("1000.00"),
             AccountStatus.ACTIVE, AccountTier.GOLD);
         adapter.save(account);
         em.flush();
@@ -128,7 +128,7 @@ class JpaAccountRepositoryAdapterTest {
         UUID ownerId = persistClient("12345678906");
         UUID accountId = UUID.randomUUID();
         Account account = new PersonalAccount(accountId, ownerId, Instant.parse("2026-10-19T11:00:00Z"),
-            new AccountNumber("PL-DELETE-" + accountId), Money.pln("0.00"),
+            new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333"), Money.pln("0.00"),
             AccountStatus.ACTIVE, AccountTier.DEFAULT);
         adapter.save(account);
         em.flush();
