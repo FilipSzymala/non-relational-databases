@@ -1,4 +1,4 @@
-package pl.nbd.bank.repository;
+package pl.nbd.bank.repositories;
 
 import pl.nbd.bank.bank.operation.Operation;
 
