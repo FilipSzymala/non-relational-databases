@@ -22,6 +22,11 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.time.YearMonth;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -146,6 +151,166 @@ class JpaAccountOptimisticLockTest {
             assertTrue(operations.findByAccountId(accountId).isEmpty());
         } finally {
             verification.close();
+        }
+    }
+
+    @Test
+    void shouldDetectOptimisticConflictBetweenTwoRealThreads() throws Exception {
+        UUID accountId = createSavingsAccount();
+        CountDownLatch bothReady = new CountDownLatch(2);
+        CountDownLatch commitStart = new CountDownLatch(1);
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        try {
+            Future<Boolean> first = executor.submit(() ->
+                    concurrentWithdrawal(accountId, "ATM-THREAD-1", bothReady, commitStart));
+            Future<Boolean> second = executor.submit(() ->
+                    concurrentWithdrawal(accountId, "ATM-THREAD-2", bothReady, commitStart));
+
+            assertTrue(bothReady.await(30, TimeUnit.SECONDS));
+            commitStart.countDown();
+
+            boolean firstCommitted = first.get(40, TimeUnit.SECONDS);
+            boolean secondCommitted = second.get(40, TimeUnit.SECONDS);
+            assertNotEquals(firstCommitted, secondCommitted);
+        } finally {
+            commitStart.countDown();
+            executor.shutdownNow();
+        }
+
+        EntityManager verification = emf.createEntityManager();
+        try {
+            JpaAccountRepositoryAdapter accounts = new JpaAccountRepositoryAdapter(verification);
+            JpaOperationRepositoryAdapter operations = new JpaOperationRepositoryAdapter(verification);
+
+            SavingsAccount saved = assertInstanceOf(
+                    SavingsAccount.class, accounts.findById(accountId).orElseThrow()
+            );
+            assertEquals(Money.pln("20.00"), saved.getBalance());
+            assertEquals(1, operations.findByAccountId(accountId).size());
+        } finally {
+            verification.close();
+        }
+    }
+
+    @Test
+    void shouldExposeStaleDomainObjectOverwritingNewerBalance() {
+        UUID accountId = createSavingsAccount();
+
+        SavingsAccount stale;
+        EntityManager staleReader = emf.createEntityManager();
+        try {
+            staleReader.getTransaction().begin();
+            stale = assertInstanceOf(
+                    SavingsAccount.class,
+                    new JpaAccountRepositoryAdapter(staleReader).findById(accountId).orElseThrow()
+            );
+            staleReader.getTransaction().commit();
+        } finally {
+            if (staleReader.getTransaction().isActive()) {
+                staleReader.getTransaction().rollback();
+            }
+            staleReader.close();
+        }
+
+        EntityManager currentWriter = emf.createEntityManager();
+        try {
+            currentWriter.getTransaction().begin();
+            JpaAccountRepositoryAdapter accounts = new JpaAccountRepositoryAdapter(currentWriter);
+            JpaOperationRepositoryAdapter operations = new JpaOperationRepositoryAdapter(currentWriter);
+
+            SavingsAccount current = assertInstanceOf(
+                    SavingsAccount.class, accounts.findById(accountId).orElseThrow()
+            );
+            current.debit(Money.pln("30.00"));
+            accounts.save(current);
+            operations.save(new AtmWithdraw(Money.pln("30.00"), accountId, "ATM-CURRENT"));
+            currentWriter.getTransaction().commit();
+        } finally {
+            if (currentWriter.getTransaction().isActive()) {
+                currentWriter.getTransaction().rollback();
+            }
+            currentWriter.close();
+        }
+
+        stale.debit(Money.pln("80.00"));
+        EntityManager staleWriter = emf.createEntityManager();
+        try {
+            staleWriter.getTransaction().begin();
+            new JpaAccountRepositoryAdapter(staleWriter).save(stale);
+            new JpaOperationRepositoryAdapter(staleWriter).save(
+                    new AtmWithdraw(Money.pln("80.00"), accountId, "ATM-STALE")
+            );
+            staleWriter.getTransaction().commit();
+        } finally {
+            if (staleWriter.getTransaction().isActive()) {
+                staleWriter.getTransaction().rollback();
+            }
+            staleWriter.close();
+        }
+
+        EntityManager verification = emf.createEntityManager();
+        try {
+            JpaAccountRepositoryAdapter accounts = new JpaAccountRepositoryAdapter(verification);
+            JpaOperationRepositoryAdapter operations = new JpaOperationRepositoryAdapter(verification);
+
+            SavingsAccount saved = assertInstanceOf(
+                    SavingsAccount.class, accounts.findById(accountId).orElseThrow()
+            );
+            assertEquals(Money.pln("20.00"), saved.getBalance());
+            assertEquals(2, operations.findByAccountId(accountId).size());
+            Money totalWithdrawn = operations.findByAccountId(accountId).stream()
+                    .map(operation -> operation.getAmount())
+                    .reduce(Money.ZERO, Money::add);
+            assertEquals(Money.pln("110.00"), totalWithdrawn);
+        } finally {
+            verification.close();
+        }
+    }
+
+    private boolean concurrentWithdrawal(
+            UUID accountId,
+            String atmId,
+            CountDownLatch bothReady,
+            CountDownLatch commitStart
+    ) throws InterruptedException {
+        EntityManager em = emf.createEntityManager();
+        boolean readySignalled = false;
+
+        try {
+            em.getTransaction().begin();
+            JpaAccountRepositoryAdapter accounts = new JpaAccountRepositoryAdapter(em);
+            JpaOperationRepositoryAdapter operations = new JpaOperationRepositoryAdapter(em);
+
+            SavingsAccount account = assertInstanceOf(
+                    SavingsAccount.class, accounts.findById(accountId).orElseThrow()
+            );
+            Money amount = Money.pln("80.00");
+            account.debit(amount);
+            accounts.save(account);
+            operations.save(new AtmWithdraw(amount, accountId, atmId));
+
+            bothReady.countDown();
+            readySignalled = true;
+            if (!commitStart.await(30, TimeUnit.SECONDS)) {
+                throw new IllegalStateException("Timed out waiting for concurrent commits");
+            }
+
+            em.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (hasOptimisticLockCause(e)) {
+                return false;
+            }
+            throw e;
+        } finally {
+            if (!readySignalled) {
+                bothReady.countDown();
+            }
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            em.close();
         }
     }
 
