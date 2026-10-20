@@ -16,6 +16,10 @@ public abstract class AccountEntity {
     @Id
     private UUID id;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private long version;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private ClientEntity client;

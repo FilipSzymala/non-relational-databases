@@ -47,4 +47,8 @@ public class SavingsAccountEntity extends AccountEntity {
     public YearMonth getLastInterestCalculationDate() {
         return lastInterestCalculationDate;
     }
+
+    public void setLastInterestCalculationDate(YearMonth lastInterestCalculationDate) {
+        this.lastInterestCalculationDate = lastInterestCalculationDate;
+    }
 }

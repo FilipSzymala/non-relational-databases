@@ -63,4 +63,28 @@ public class AccountMapper {
 
         throw new IllegalArgumentException("Unsupported account entity type: " + entity.getClass());
     }
+
+    public void updateEntity(Account account, AccountEntity entity) {
+        if (!entity.getId().equals(account.getId())
+                || !entity.getClient().getId().equals(account.getOwnerId())) {
+            throw new IllegalArgumentException("Account identity does not match");
+        }
+
+        if (account instanceof PersonalAccount personal
+                && entity instanceof PersonalAccountEntity personalEntity) {
+            personalEntity.setTier(
+                    pl.nbd.infrastructure.entities.account.enums.AccountTier.valueOf(personal.getTier().name())
+            );
+        } else if (account instanceof SavingsAccount savings
+                && entity instanceof SavingsAccountEntity savingsEntity) {
+            savingsEntity.setLastInterestCalculationDate(savings.getLastInterestCalculationDate());
+        } else {
+            throw new IllegalArgumentException("Account type cannot be changed: " + account.getId());
+        }
+
+        entity.setBalance(account.getBalance().amount());
+        entity.setStatus(
+                pl.nbd.infrastructure.entities.account.enums.AccountStatus.valueOf(account.getStatus().name())
+        );
+    }
 }

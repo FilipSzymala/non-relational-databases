@@ -76,11 +76,7 @@ public class JpaClientRepositoryAdapter implements ClientRepository {
                 if (!currentAccount.getClient().getId().equals(client.getId())) {
                     throw new IllegalArgumentException("Account belongs to another client");
                 }
-                AccountEntity updated = accountMapper.toEntity(account, current);
-                if (!currentAccount.getClass().equals(updated.getClass())) {
-                    throw new IllegalArgumentException("Account type cannot be changed");
-                }
-                em.merge(updated);
+                accountMapper.updateEntity(account, currentAccount);
             }
         }
     }

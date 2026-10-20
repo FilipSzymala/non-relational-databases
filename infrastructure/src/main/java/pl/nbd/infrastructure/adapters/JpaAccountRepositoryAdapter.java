@@ -48,28 +48,18 @@ public class JpaAccountRepositoryAdapter implements AccountRepository {
     public void save(Account account) {
         Objects.requireNonNull(account);
 
+        Optional<AccountEntity> existing = repository.findById(account.getId());
+        if (existing.isPresent()) {
+            mapper.updateEntity(account, existing.get());
+            return;
+        }
+
         ClientEntity client = em.find(ClientEntity.class, account.getOwnerId());
         if (client == null) {
             throw new IllegalArgumentException("Client does not exist: " + account.getOwnerId());
         }
 
-        AccountEntity mapped = mapper.toEntity(account, client);
-        Optional<AccountEntity> existing = repository.findById(account.getId());
-
-        if (existing.isEmpty()) {
-            repository.persist(mapped);
-            return;
-        }
-
-        AccountEntity current = existing.get();
-        if (!current.getClass().equals(mapped.getClass())) {
-            throw new IllegalArgumentException("Account type cannot be changed: " + account.getId());
-        }
-        if (!current.getClient().getId().equals(account.getOwnerId())) {
-            throw new IllegalArgumentException("Account owner cannot be changed: " + account.getId());
-        }
-
-        em.merge(mapped);
+        repository.persist(mapper.toEntity(account, client));
     }
 
     @Override

@@ -36,4 +36,8 @@ public class PersonalAccountEntity extends AccountEntity {
     public AccountTier getTier() {
         return tier;
     }
+
+    public void setTier(AccountTier tier) {
+        this.tier = tier;
+    }
 }
