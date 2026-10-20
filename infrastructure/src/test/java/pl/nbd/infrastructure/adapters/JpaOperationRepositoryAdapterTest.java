@@ -80,13 +80,14 @@ class JpaOperationRepositoryAdapterTest {
         em.clear();
 
         Instant at = Instant.parse("2026-10-19T12:00:00Z");
-        AtmDeposit deposit = new AtmDeposit(UUID.randomUUID(), at, Money.pln("150.00"), personalId, "ATM-001");
-        AtmWithdraw withdrawal = new AtmWithdraw(UUID.randomUUID(), at.plusSeconds(1),
-            Money.pln("50.00"), personalId, "ATM-002");
-        Transfer transfer = new Transfer(UUID.randomUUID(), at.plusSeconds(2),
-            Money.pln("200.00"), personalId, savingsId);
-        InterestCapitalization capitalization = new InterestCapitalization(UUID.randomUUID(),
-            at.plusSeconds(3), Money.pln("3.50"), savingsId, YearMonth.of(2026, 9));
+        AtmDeposit deposit = new AtmDeposit(
+                UUID.randomUUID(), at, Money.pln("150.00"), personalId, "ATM-001");
+        AtmWithdraw withdrawal = new AtmWithdraw(
+                UUID.randomUUID(), at.plusSeconds(1), Money.pln("50.00"), personalId, "ATM-002");
+        Transfer transfer = new Transfer(
+                UUID.randomUUID(), at.plusSeconds(2), Money.pln("200.00"), personalId, savingsId);
+        InterestCapitalization capitalization = new InterestCapitalization(
+                UUID.randomUUID(), at.plusSeconds(3), Money.pln("3.50"), savingsId, YearMonth.of(2026, 9));
 
         adapter.save(deposit);
         adapter.save(withdrawal);
@@ -102,10 +103,11 @@ class JpaOperationRepositoryAdapterTest {
             assertEquals(original.getAmount(), restored.getAmount());
             assertEquals(original.affectedAccounts(), restored.affectedAccounts());
         }
-        AtmDeposit readDeposit = assertInstanceOf(AtmDeposit.class, adapter.findById(deposit.getId()).orElseThrow());
+        AtmDeposit readDeposit = assertInstanceOf(
+                AtmDeposit.class, adapter.findById(deposit.getId()).orElseThrow());
         assertEquals("ATM-001", readDeposit.getAtmId());
-        InterestCapitalization readCapitalization = assertInstanceOf(InterestCapitalization.class,
-            adapter.findById(capitalization.getId()).orElseThrow());
+        InterestCapitalization readCapitalization = assertInstanceOf(
+                InterestCapitalization.class, adapter.findById(capitalization.getId()).orElseThrow());
         assertEquals(YearMonth.of(2026, 9), readCapitalization.getMonth());
 
         List<Operation> personalOperations = adapter.findByAccountId(personalId);
@@ -118,7 +120,8 @@ class JpaOperationRepositoryAdapterTest {
     @Test
     void shouldRejectUnknownAccountAndDuplicateOperation() {
         UUID unknownId = UUID.randomUUID();
-        AtmDeposit unknown = new AtmDeposit(Money.pln("10.00"), unknownId, "ATM-UNKNOWN");
+        AtmDeposit unknown = new AtmDeposit(
+                Money.pln("10.00"), unknownId, "ATM-UNKNOWN");
         assertThrows(IllegalArgumentException.class, () -> adapter.save(unknown));
         assertTrue(adapter.findById(unknown.getId()).isEmpty());
 
@@ -133,14 +136,27 @@ class JpaOperationRepositoryAdapterTest {
 
     private void persistClientWithTwoAccounts(UUID ownerId, UUID personalId, UUID savingsId, String pesel) {
         Client client = new Client(ownerId, "Tomasz", "Kowalski",
-            new PersonalId(pesel), new Address("Polska", "Łódź", "Piotrkowska",
-            "10", "2", "90-001"));
+                new PersonalId(pesel),
+                new Address("Polska", "Łódź", "Piotrkowska", "10", "2", "90-001"));
         Instant created = Instant.parse("2026-10-19T09:00:00Z");
-        client.addAccount(new PersonalAccount(personalId, ownerId, created,
-            new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333"), Money.pln("1000.00"), AccountStatus.ACTIVE, AccountTier.GOLD));
-        client.addAccount(new SavingsAccount(savingsId, ownerId, created,
-            new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333"), Money.pln("2000.00"),
-            AccountStatus.ACTIVE, new BigDecimal("0.045"), YearMonth.of(2026, 8)));
+        client.addAccount(new PersonalAccount(
+                personalId, ownerId, created,
+                accountNumber(personalId),
+                Money.pln("1000.00"), AccountStatus.ACTIVE, AccountTier.GOLD
+        ));
+        client.addAccount(new SavingsAccount(
+                savingsId, ownerId, created,
+                accountNumber(savingsId),
+                Money.pln("2000.00"), AccountStatus.ACTIVE,
+                new BigDecimal("0.045"), YearMonth.of(2026, 8)
+        ));
         new JpaClientRepositoryAdapter(em).save(client);
     }
+    private static AccountNumber accountNumber(UUID id) {
+        String value = "%064d".formatted(
+                new java.math.BigInteger(id.toString().replace("-", ""), 16)
+        );
+        return new AccountNumber(value);
+    }
+
 }

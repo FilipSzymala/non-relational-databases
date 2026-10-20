@@ -27,7 +27,6 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JpaAccountRepositoryAdapterTest {
-
     private static EntityManagerFactory emf;
     private EntityManager em;
     private JpaAccountRepositoryAdapter adapter;
@@ -71,26 +70,32 @@ class JpaAccountRepositoryAdapterTest {
         UUID personalId = UUID.randomUUID();
         UUID savingsId = UUID.randomUUID();
         Instant createdAt = Instant.parse("2026-10-19T09:00:00Z");
-        AccountNumber personalNumber = new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333");
-        AccountNumber savingsNumber = new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333");
+        AccountNumber personalNumber = accountNumber(personalId);
+        AccountNumber savingsNumber = accountNumber(savingsId);
 
-        PersonalAccount personal = new PersonalAccount(personalId, ownerId, createdAt, personalNumber,
-            Money.pln("500.00"), AccountStatus.ACTIVE, AccountTier.GOLD);
-        SavingsAccount savings = new SavingsAccount(savingsId, ownerId, createdAt, savingsNumber,
-            Money.pln("1000.00"), AccountStatus.ACTIVE, new BigDecimal("0.045"),
-            YearMonth.of(2026, 9));
+        PersonalAccount personal = new PersonalAccount(
+                personalId, ownerId, createdAt, personalNumber,
+                Money.pln("500.00"), AccountStatus.ACTIVE, AccountTier.GOLD
+        );
+        SavingsAccount savings = new SavingsAccount(
+                savingsId, ownerId, createdAt, savingsNumber,
+                Money.pln("1000.00"), AccountStatus.ACTIVE,
+                new BigDecimal("0.045"), YearMonth.of(2026, 9)
+        );
 
         adapter.save(personal);
         adapter.save(savings);
         em.flush();
         em.clear();
 
-        PersonalAccount readPersonal = assertInstanceOf(PersonalAccount.class, adapter.findById(personalId).orElseThrow());
+        PersonalAccount readPersonal = assertInstanceOf(
+                PersonalAccount.class, adapter.findById(personalId).orElseThrow());
         assertEquals(AccountTier.GOLD, readPersonal.getTier());
         assertEquals(Money.pln("500.00"), readPersonal.getBalance());
         assertEquals(personalId, adapter.findByAccountNumber(personalNumber).orElseThrow().getId());
 
-        SavingsAccount readSavings = assertInstanceOf(SavingsAccount.class, adapter.findByAccountNumber(savingsNumber).orElseThrow());
+        SavingsAccount readSavings = assertInstanceOf(
+                SavingsAccount.class, adapter.findByAccountNumber(savingsNumber).orElseThrow());
         assertEquals(savingsId, readSavings.getId());
         assertEquals(0, new BigDecimal("0.045").compareTo(readSavings.getAnnualInterestRate()));
         assertEquals(YearMonth.of(2026, 9), readSavings.getLastInterestCalculationDate());
@@ -102,14 +107,17 @@ class JpaAccountRepositoryAdapterTest {
     void shouldUpdateExistingBalanceStatusAndTier() {
         UUID ownerId = persistClient("12345678905");
         UUID accountId = UUID.randomUUID();
-        PersonalAccount account = new PersonalAccount(accountId, ownerId, Instant.parse("2026-10-19T10:00:00Z"),
-            new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333"), Money.pln("1000.00"),
-            AccountStatus.ACTIVE, AccountTier.GOLD);
+        PersonalAccount account = new PersonalAccount(
+                accountId, ownerId, Instant.parse("2026-10-19T10:00:00Z"),
+                accountNumber(accountId),
+                Money.pln("1000.00"), AccountStatus.ACTIVE, AccountTier.GOLD
+        );
         adapter.save(account);
         em.flush();
         em.clear();
 
-        PersonalAccount changed = assertInstanceOf(PersonalAccount.class, adapter.findById(accountId).orElseThrow());
+        PersonalAccount changed = assertInstanceOf(
+                PersonalAccount.class, adapter.findById(accountId).orElseThrow());
         changed.debit(Money.pln("250.00"));
         changed.changeAccountTier(AccountTier.SILVER);
         changed.block();
@@ -117,7 +125,8 @@ class JpaAccountRepositoryAdapterTest {
         em.flush();
         em.clear();
 
-        PersonalAccount reloaded = assertInstanceOf(PersonalAccount.class, adapter.findById(accountId).orElseThrow());
+        PersonalAccount reloaded = assertInstanceOf(
+                PersonalAccount.class, adapter.findById(accountId).orElseThrow());
         assertEquals(Money.pln("750.00"), reloaded.getBalance());
         assertEquals(AccountStatus.BLOCKED, reloaded.getStatus());
         assertEquals(AccountTier.SILVER, reloaded.getTier());
@@ -127,9 +136,11 @@ class JpaAccountRepositoryAdapterTest {
     void shouldDeleteAccountWithoutOperations() {
         UUID ownerId = persistClient("12345678906");
         UUID accountId = UUID.randomUUID();
-        Account account = new PersonalAccount(accountId, ownerId, Instant.parse("2026-10-19T11:00:00Z"),
-            new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333"), Money.pln("0.00"),
-            AccountStatus.ACTIVE, AccountTier.DEFAULT);
+        Account account = new PersonalAccount(
+                accountId, ownerId, Instant.parse("2026-10-19T11:00:00Z"),
+                accountNumber(accountId),
+                Money.pln("0.00"), AccountStatus.ACTIVE, AccountTier.DEFAULT
+        );
         adapter.save(account);
         em.flush();
         em.clear();
@@ -144,11 +155,17 @@ class JpaAccountRepositoryAdapterTest {
 
     private UUID persistClient(String personalId) {
         UUID clientId = UUID.randomUUID();
-        Client client = new Client(clientId, "Anna", "Nowak",
-            new PersonalId(personalId), new Address("Polska", "Gdańsk", "Długa",
-            "10", "1", "80-001"));
+        Client client = new Client(clientId, "Anna", "Nowak", new PersonalId(personalId),
+                new Address("Polska", "Gdańsk", "Długa", "10", "1", "80-001"));
         new JpaClientRepositoryAdapter(em).save(client);
         em.flush();
         return clientId;
     }
+    private static AccountNumber accountNumber(UUID id) {
+        String value = "%064d".formatted(
+                new java.math.BigInteger(id.toString().replace("-", ""), 16)
+        );
+        return new AccountNumber(value);
+    }
+
 }

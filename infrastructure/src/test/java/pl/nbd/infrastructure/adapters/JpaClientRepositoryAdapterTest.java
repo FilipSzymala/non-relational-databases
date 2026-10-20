@@ -22,6 +22,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JpaClientRepositoryAdapterTest {
+
     private static EntityManagerFactory emf;
     private EntityManager em;
     private JpaClientRepositoryAdapter adapter;
@@ -66,10 +67,11 @@ class JpaClientRepositoryAdapterTest {
         PersonalId personalId = new PersonalId("12345678901");
 
         Client client = createClient(clientId, personalId);
-        client.addAccount(new PersonalAccount(accountId, clientId,
-            java.time.Instant.parse("2026-10-19T10:00:00Z"),
-            new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333"), Money.pln("1250.50"),
-            AccountStatus.ACTIVE, AccountTier.GOLD));
+        client.addAccount(new PersonalAccount(
+                accountId, clientId, java.time.Instant.parse("2026-10-19T10:00:00Z"),
+                accountNumber(accountId),
+                Money.pln("1250.50"), AccountStatus.ACTIVE, AccountTier.GOLD
+        ));
 
         adapter.save(client);
         em.flush();
@@ -99,12 +101,15 @@ class JpaClientRepositoryAdapterTest {
 
         Client restored = adapter.findById(clientId).orElseThrow();
         restored.setFirstName("Anna");
-        restored.setAddress(new Address("Polska", "Warszawa", "Nowa", "22", "4", "00-001"));
+        restored.setAddress(new Address(
+                "Polska", "Warszawa", "Nowa", "22", "4", "00-001"
+        ));
         UUID accountId = UUID.randomUUID();
-        restored.addAccount(new PersonalAccount(accountId, clientId,
-            java.time.Instant.parse("2026-10-19T11:00:00Z"),
-            new AccountNumber("P111111111111111111111111111111111111111111111111111111111111333"), Money.pln("200.00"),
-            AccountStatus.ACTIVE, AccountTier.SILVER));
+        restored.addAccount(new PersonalAccount(
+                accountId, clientId, java.time.Instant.parse("2026-10-19T11:00:00Z"),
+                accountNumber(accountId),
+                Money.pln("200.00"), AccountStatus.ACTIVE, AccountTier.SILVER
+        ));
 
         adapter.save(restored);
         em.flush();
@@ -122,16 +127,18 @@ class JpaClientRepositoryAdapterTest {
         UUID clientId = UUID.randomUUID();
         UUID accountId = UUID.randomUUID();
         Client client = createClient(clientId, new PersonalId("12345678909"));
-        client.addAccount(new PersonalAccount(accountId, clientId,
-            java.time.Instant.parse("2026-10-19T10:00:00Z"),
-            new AccountNumber("1111111111111111111111111111111111111111111111111111111111113333"), Money.pln("1000.00"),
-            AccountStatus.ACTIVE, AccountTier.GOLD));
+        client.addAccount(new PersonalAccount(
+                accountId, clientId, java.time.Instant.parse("2026-10-19T10:00:00Z"),
+                accountNumber(accountId),
+                Money.pln("1000.00"), AccountStatus.ACTIVE, AccountTier.GOLD
+        ));
         adapter.save(client);
         em.flush();
         em.clear();
 
         Client changed = adapter.findById(clientId).orElseThrow();
-        PersonalAccount account = assertInstanceOf(PersonalAccount.class, changed.getAccounts().getFirst());
+        PersonalAccount account = assertInstanceOf(
+                PersonalAccount.class, changed.getAccounts().getFirst());
         account.debit(Money.pln("250.00"));
         account.changeAccountTier(AccountTier.SILVER);
         adapter.save(changed);
@@ -140,7 +147,8 @@ class JpaClientRepositoryAdapterTest {
 
         Client loaded = adapter.findById(clientId).orElseThrow();
         assertEquals(1, loaded.getAccounts().size());
-        PersonalAccount updated = assertInstanceOf(PersonalAccount.class, loaded.getAccounts().getFirst());
+        PersonalAccount updated = assertInstanceOf(
+                PersonalAccount.class, loaded.getAccounts().getFirst());
         assertEquals(Money.pln("750.00"), updated.getBalance());
         assertEquals(AccountTier.SILVER, updated.getTier());
     }
@@ -163,7 +171,13 @@ class JpaClientRepositoryAdapterTest {
 
     private static Client createClient(UUID id, PersonalId personalId) {
         return new Client(id, "Kamil", "Kowalenko", personalId,
-            new Address("Polska", "Płock", "Komendancka",
-                "60", "12", "12-321"));
+                new Address("Polska", "Płock", "Komendancka", "60", "12", "12-321"));
     }
+    private static AccountNumber accountNumber(UUID id) {
+        String value = "%064d".formatted(
+                new java.math.BigInteger(id.toString().replace("-", ""), 16)
+        );
+        return new AccountNumber(value);
+    }
+
 }
