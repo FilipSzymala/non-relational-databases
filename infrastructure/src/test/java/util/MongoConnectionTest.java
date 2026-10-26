@@ -3,9 +3,7 @@ package util;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import pl.nbd.infrastructure.util.AbstractMongoRepository;
 import pl.nbd.infrastructure.util.MongoClientFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
