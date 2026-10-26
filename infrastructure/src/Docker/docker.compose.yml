@@ -9,7 +9,7 @@ services:
         networks:
             - mongonet
         ports:
-            - "27017:27017"
+            - "127.0.0.1:27017:27017"
         volumes:
             - mongo-db-data-1:/data/db
             - mongo-configdb-data-1:/data/configdb
@@ -32,7 +32,7 @@ services:
         networks:
             - mongonet
         ports:
-            - "27018:27018"
+            - "127.0.0.1:27018:27018"
         volumes:
             - mongo-db-data-2:/data/db
             - mongo-configdb-data-2:/data/configdb
@@ -55,7 +55,7 @@ services:
         networks:
             - mongonet
         ports:
-            - "27019:27019"
+            - "127.0.0.1:27019:27019"
         volumes:
             - mongo-db-data-3:/data/db
             - mongo-configdb-data-3:/data/configdb
