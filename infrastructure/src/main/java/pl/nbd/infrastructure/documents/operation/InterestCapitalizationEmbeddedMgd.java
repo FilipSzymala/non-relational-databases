@@ -9,25 +9,24 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
-@BsonDiscriminator(value = "atm_withdraw")
-public class AtmWithdrawEmbedded extends AbstractOperationEmbedded {
+@BsonDiscriminator(value = "interest_capitalization")
+public class InterestCapitalizationEmbeddedMgd extends AbstractOperationEmbeddedMgd {
     @BsonProperty("account_id")
     private final UUID accountId;
-    @BsonProperty("atm_id")
-    private final String atmId;
+    private final String month;
 
     @BsonCreator
-    public AtmWithdrawEmbedded(@BsonId UUID id, @BsonProperty("occurred_at") Instant occurredAt, @BsonProperty("amount") BigDecimal amount, @BsonProperty("account_id") UUID accountId, @BsonProperty("atm_id") String atmId) {
+    public InterestCapitalizationEmbeddedMgd(@BsonId UUID id, @BsonProperty("occurred_at") Instant occurredAt, @BsonProperty("amount") BigDecimal amount, @BsonProperty("account_id") UUID accountId, @BsonProperty("month") String month) {
         super(id, occurredAt, amount);
         this.accountId = accountId;
-        this.atmId = atmId;
+        this.month = month;
     }
 
     public UUID getAccountId() {
         return accountId;
     }
 
-    public String getAtmId() {
-        return atmId;
+    public String getMonth() {
+        return month;
     }
 }

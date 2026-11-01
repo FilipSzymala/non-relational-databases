@@ -7,22 +7,22 @@ import pl.nbd.bank.bank.operation.InterestCapitalization;
 import pl.nbd.bank.bank.operation.Operation;
 import pl.nbd.bank.bank.operation.Transfer;
 import pl.nbd.bank.bank.shared.Money;
-import pl.nbd.infrastructure.documents.operation.AbstractOperationEmbedded;
-import pl.nbd.infrastructure.documents.operation.AtmDepositEmbedded;
-import pl.nbd.infrastructure.documents.operation.AtmWithdrawEmbedded;
-import pl.nbd.infrastructure.documents.operation.InterestCapitalizationEmbedded;
-import pl.nbd.infrastructure.documents.operation.TransferEmbedded;
+import pl.nbd.infrastructure.documents.operation.AbstractOperationEmbeddedMgd;
+import pl.nbd.infrastructure.documents.operation.AtmDepositEmbeddedMgd;
+import pl.nbd.infrastructure.documents.operation.AtmWithdrawEmbeddedMgd;
+import pl.nbd.infrastructure.documents.operation.InterestCapitalizationEmbeddedMgd;
+import pl.nbd.infrastructure.documents.operation.TransferEmbeddedMgd;
 
 import java.time.YearMonth;
 import java.util.Objects;
 
 public class OperationMapper {
 
-    public AbstractOperationEmbedded toDocument(Operation operation) {
+    public AbstractOperationEmbeddedMgd toDocument(Operation operation) {
         Objects.requireNonNull(operation, "Operation must not be null");
 
         if (operation instanceof AtmDeposit deposit) {
-            return new AtmDepositEmbedded(
+            return new AtmDepositEmbeddedMgd(
                 deposit.getId(),
                 deposit.getOccurredAt(),
                 deposit.getAmount().amount(),
@@ -32,7 +32,7 @@ public class OperationMapper {
         }
 
         if (operation instanceof AtmWithdraw withdraw) {
-            return new AtmWithdrawEmbedded(
+            return new AtmWithdrawEmbeddedMgd(
                 withdraw.getId(),
                 withdraw.getOccurredAt(),
                 withdraw.getAmount().amount(),
@@ -42,7 +42,7 @@ public class OperationMapper {
         }
 
         if (operation instanceof InterestCapitalization capitalization) {
-            return new InterestCapitalizationEmbedded(
+            return new InterestCapitalizationEmbeddedMgd(
                 capitalization.getId(),
                 capitalization.getOccurredAt(),
                 capitalization.getAmount().amount(),
@@ -52,7 +52,7 @@ public class OperationMapper {
         }
 
         if (operation instanceof Transfer transfer) {
-            return new TransferEmbedded(
+            return new TransferEmbeddedMgd(
                 transfer.getId(),
                 transfer.getOccurredAt(),
                 transfer.getAmount().amount(),
@@ -66,10 +66,10 @@ public class OperationMapper {
         );
     }
 
-    public Operation toDomain(AbstractOperationEmbedded document) {
+    public Operation toDomain(AbstractOperationEmbeddedMgd document) {
         Objects.requireNonNull(document, "Operation document must not be null");
 
-        if (document instanceof AtmDepositEmbedded deposit) {
+        if (document instanceof AtmDepositEmbeddedMgd deposit) {
             return new AtmDeposit(
                 deposit.getId(),
                 deposit.getOccurredAt(),
@@ -79,7 +79,7 @@ public class OperationMapper {
             );
         }
 
-        if (document instanceof AtmWithdrawEmbedded withdraw) {
+        if (document instanceof AtmWithdrawEmbeddedMgd withdraw) {
             return new AtmWithdraw(
                 withdraw.getId(),
                 withdraw.getOccurredAt(),
@@ -89,7 +89,7 @@ public class OperationMapper {
             );
         }
 
-        if (document instanceof InterestCapitalizationEmbedded capitalization) {
+        if (document instanceof InterestCapitalizationEmbeddedMgd capitalization) {
             return new InterestCapitalization(
                 capitalization.getId(),
                 capitalization.getOccurredAt(),
@@ -99,7 +99,7 @@ public class OperationMapper {
             );
         }
 
-        if (document instanceof TransferEmbedded transfer) {
+        if (document instanceof TransferEmbeddedMgd transfer) {
             return new Transfer(
                 transfer.getId(),
                 transfer.getOccurredAt(),

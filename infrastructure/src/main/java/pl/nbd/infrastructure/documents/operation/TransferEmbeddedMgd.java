@@ -10,14 +10,14 @@ import java.time.Instant;
 import java.util.UUID;
 
 @BsonDiscriminator(value = "transfer")
-public class TransferEmbedded extends AbstractOperationEmbedded {
+public class TransferEmbeddedMgd extends AbstractOperationEmbeddedMgd {
     @BsonProperty("source_account_id")
     private final UUID sourceAccountId;
     @BsonProperty("target_account_id")
     private final UUID targetAccountId;
 
     @BsonCreator
-    public TransferEmbedded(@BsonId UUID id, @BsonProperty("occurred_at") Instant occurredAt, @BsonProperty("amount") BigDecimal amount, @BsonProperty("source_account_id") UUID sourceAccountId, @BsonProperty("target_account_id") UUID targetAccountId) {
+    public TransferEmbeddedMgd(@BsonId UUID id, @BsonProperty("occurred_at") Instant occurredAt, @BsonProperty("amount") BigDecimal amount, @BsonProperty("source_account_id") UUID sourceAccountId, @BsonProperty("target_account_id") UUID targetAccountId) {
         super(id, occurredAt, amount);
         this.sourceAccountId = sourceAccountId;
         this.targetAccountId = targetAccountId;

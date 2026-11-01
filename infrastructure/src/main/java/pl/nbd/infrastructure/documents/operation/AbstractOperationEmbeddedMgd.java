@@ -9,14 +9,14 @@ import java.time.Instant;
 import java.util.UUID;
 
 @BsonDiscriminator
-public abstract class AbstractOperationEmbedded {
+public abstract class AbstractOperationEmbeddedMgd {
     @BsonId
     private final UUID id;
     @BsonProperty("occurred_at")
     private final Instant occurredAt;
     private final BigDecimal amount;
 
-    protected AbstractOperationEmbedded(UUID id, Instant occurredAt, BigDecimal amount) {
+    protected AbstractOperationEmbeddedMgd(UUID id, Instant occurredAt, BigDecimal amount) {
         this.id = id;
         this.occurredAt = occurredAt;
         this.amount = amount;

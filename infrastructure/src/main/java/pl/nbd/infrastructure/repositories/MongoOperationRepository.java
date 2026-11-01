@@ -6,11 +6,11 @@ import com.mongodb.client.MongoCollection;
 import org.bson.BsonDocument;
 import org.bson.BsonDocumentReader;
 import org.bson.codecs.DecoderContext;
-import pl.nbd.infrastructure.documents.operation.AbstractOperationEmbedded;
-import pl.nbd.infrastructure.documents.operation.AtmDepositEmbedded;
-import pl.nbd.infrastructure.documents.operation.AtmWithdrawEmbedded;
-import pl.nbd.infrastructure.documents.operation.InterestCapitalizationEmbedded;
-import pl.nbd.infrastructure.documents.operation.TransferEmbedded;
+import pl.nbd.infrastructure.documents.operation.AbstractOperationEmbeddedMgd;
+import pl.nbd.infrastructure.documents.operation.AtmDepositEmbeddedMgd;
+import pl.nbd.infrastructure.documents.operation.AtmWithdrawEmbeddedMgd;
+import pl.nbd.infrastructure.documents.operation.InterestCapitalizationEmbeddedMgd;
+import pl.nbd.infrastructure.documents.operation.TransferEmbeddedMgd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,41 +25,41 @@ import static com.mongodb.client.model.Sorts.ascending;
 public class MongoOperationRepository extends AbstractMongoRepository {
 
     private final MongoCollection<BsonDocument> operations;
-    private final MongoCollection<AtmDepositEmbedded> deposits;
-    private final MongoCollection<AtmWithdrawEmbedded> withdrawals;
-    private final MongoCollection<InterestCapitalizationEmbedded> capitalizations;
-    private final MongoCollection<TransferEmbedded> transfers;
+    private final MongoCollection<AtmDepositEmbeddedMgd> deposits;
+    private final MongoCollection<AtmWithdrawEmbeddedMgd> withdrawals;
+    private final MongoCollection<InterestCapitalizationEmbeddedMgd> capitalizations;
+    private final MongoCollection<TransferEmbeddedMgd> transfers;
 
     public MongoOperationRepository(MongoClient mongoClient) {
         super(mongoClient);
 
         var database = mongoClient.getDatabase("bank");
         this.operations = database.getCollection("operations", BsonDocument.class);
-        this.deposits = database.getCollection("operations", AtmDepositEmbedded.class);
-        this.withdrawals = database.getCollection("operations", AtmWithdrawEmbedded.class);
-        this.capitalizations = database.getCollection("operations", InterestCapitalizationEmbedded.class);
-        this.transfers = database.getCollection("operations", TransferEmbedded.class);
+        this.deposits = database.getCollection("operations", AtmDepositEmbeddedMgd.class);
+        this.withdrawals = database.getCollection("operations", AtmWithdrawEmbeddedMgd.class);
+        this.capitalizations = database.getCollection("operations", InterestCapitalizationEmbeddedMgd.class);
+        this.transfers = database.getCollection("operations", TransferEmbeddedMgd.class);
     }
 
-    public void insert(AbstractOperationEmbedded operation) {
+    public void insert(AbstractOperationEmbeddedMgd operation) {
         Objects.requireNonNull(operation, "Operation must not be null");
 
-        if (operation instanceof AtmDepositEmbedded deposit) {
+        if (operation instanceof AtmDepositEmbeddedMgd deposit) {
             deposits.insertOne(deposit);
             return;
         }
 
-        if (operation instanceof AtmWithdrawEmbedded withdraw) {
+        if (operation instanceof AtmWithdrawEmbeddedMgd withdraw) {
             withdrawals.insertOne(withdraw);
             return;
         }
 
-        if (operation instanceof InterestCapitalizationEmbedded capitalization) {
+        if (operation instanceof InterestCapitalizationEmbeddedMgd capitalization) {
             capitalizations.insertOne(capitalization);
             return;
         }
 
-        if (operation instanceof TransferEmbedded transfer) {
+        if (operation instanceof TransferEmbeddedMgd transfer) {
             transfers.insertOne(transfer);
             return;
         }
@@ -67,7 +67,7 @@ public class MongoOperationRepository extends AbstractMongoRepository {
         throw new IllegalArgumentException("Unsupported operation type: " + operation.getClass().getName());
     }
 
-    public Optional<AbstractOperationEmbedded> findById(UUID id) {
+    public Optional<AbstractOperationEmbeddedMgd> findById(UUID id) {
         Objects.requireNonNull(id, "Operation id must not be null");
 
         BsonDocument document = operations.find(eq("_id", id)).first();
@@ -75,7 +75,7 @@ public class MongoOperationRepository extends AbstractMongoRepository {
         return Optional.ofNullable(document).map(this::decode);
     }
 
-    public List<AbstractOperationEmbedded> findByAccountId(UUID accountId) {
+    public List<AbstractOperationEmbeddedMgd> findByAccountId(UUID accountId) {
         Objects.requireNonNull(accountId, "Account id must not be null");
 
         return decodeAll(operations.find(or(
@@ -85,14 +85,14 @@ public class MongoOperationRepository extends AbstractMongoRepository {
                                            )).sort(ascending("occurred_at", "_id")));
     }
 
-    public List<AbstractOperationEmbedded> findAll() {
+    public List<AbstractOperationEmbeddedMgd> findAll() {
         return decodeAll(operations.find().sort(ascending("occurred_at", "_id")));
     }
 
-    private List<AbstractOperationEmbedded> decodeAll(
+    private List<AbstractOperationEmbeddedMgd> decodeAll(
         FindIterable<BsonDocument> documents
-                                                     ) {
-        List<AbstractOperationEmbedded> result = new ArrayList<>();
+                                                        ) {
+        List<AbstractOperationEmbeddedMgd> result = new ArrayList<>();
 
         for (BsonDocument document : documents) {
             result.add(decode(document));
@@ -101,7 +101,7 @@ public class MongoOperationRepository extends AbstractMongoRepository {
         return result;
     }
 
-    private AbstractOperationEmbedded decode(BsonDocument document) {
+    private AbstractOperationEmbeddedMgd decode(BsonDocument document) {
         if (!document.isString("_t")) {
             throw new IllegalStateException("Missing or invalid operation discriminator");
         }
@@ -109,15 +109,15 @@ public class MongoOperationRepository extends AbstractMongoRepository {
         String type = document.getString("_t").getValue();
 
         return switch (type) {
-            case "atm_deposit" -> decode(document, AtmDepositEmbedded.class);
-            case "atm_withdraw" -> decode(document, AtmWithdrawEmbedded.class);
-            case "interest_capitalization" -> decode(document, InterestCapitalizationEmbedded.class);
-            case "transfer" -> decode(document, TransferEmbedded.class);
+            case "atm_deposit" -> decode(document, AtmDepositEmbeddedMgd.class);
+            case "atm_withdraw" -> decode(document, AtmWithdrawEmbeddedMgd.class);
+            case "interest_capitalization" -> decode(document, InterestCapitalizationEmbeddedMgd.class);
+            case "transfer" -> decode(document, TransferEmbeddedMgd.class);
             default -> throw new IllegalStateException("Unsupported operation type: " + type);
         };
     }
 
-    private <T extends AbstractOperationEmbedded> T decode(BsonDocument document, Class<T> type) {
+    private <T extends AbstractOperationEmbeddedMgd> T decode(BsonDocument document, Class<T> type) {
         return operations.getCodecRegistry().get(type).decode(
             new BsonDocumentReader(document),
             DecoderContext.builder().build());

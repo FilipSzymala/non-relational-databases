@@ -9,15 +9,15 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
-@BsonDiscriminator(value = "atm_deposit")
-public class AtmDepositEmbedded extends AbstractOperationEmbedded {
+@BsonDiscriminator(value = "atm_withdraw")
+public class AtmWithdrawEmbeddedMgd extends AbstractOperationEmbeddedMgd {
     @BsonProperty("account_id")
     private final UUID accountId;
     @BsonProperty("atm_id")
     private final String atmId;
 
     @BsonCreator
-    public AtmDepositEmbedded(@BsonId UUID id, @BsonProperty("occurred_at") Instant occurredAt, @BsonProperty("amount") BigDecimal amount, @BsonProperty("account_id") UUID accountId, @BsonProperty("atm_id") String atmId) {
+    public AtmWithdrawEmbeddedMgd(@BsonId UUID id, @BsonProperty("occurred_at") Instant occurredAt, @BsonProperty("amount") BigDecimal amount, @BsonProperty("account_id") UUID accountId, @BsonProperty("atm_id") String atmId) {
         super(id, occurredAt, amount);
         this.accountId = accountId;
         this.atmId = atmId;
