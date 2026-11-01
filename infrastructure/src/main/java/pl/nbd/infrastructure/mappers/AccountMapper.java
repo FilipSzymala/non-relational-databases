@@ -20,11 +20,28 @@ public class AccountMapper {
         Objects.requireNonNull(account, "Account must not be null");
 
         if (account instanceof PersonalAccount personalAccount) {
-            return new PersonalAccountEmbeddedMgd(personalAccount.getId(), personalAccount.getOwnerId(), personalAccount.getCreatedAt(), personalAccount.getAccountNumber().number(), personalAccount.getBalance().amount(), toDocumentStatus(personalAccount.getStatus()), toDocumentTier(personalAccount.getTier()));
+            return new PersonalAccountEmbeddedMgd(
+                personalAccount.getId(),
+                personalAccount.getOwnerId(),
+                personalAccount.getCreatedAt(),
+                personalAccount.getAccountNumber().number(),
+                personalAccount.getBalance().amount(),
+                toDocumentStatus(personalAccount.getStatus()),
+                toDocumentTier(personalAccount.getTier())
+            );
         }
 
         if (account instanceof SavingsAccount savingsAccount) {
-            return new SavingsAccountEmbeddedMgd(savingsAccount.getId(), savingsAccount.getOwnerId(), savingsAccount.getCreatedAt(), savingsAccount.getAccountNumber().number(), savingsAccount.getBalance().amount(), toDocumentStatus(savingsAccount.getStatus()), savingsAccount.getAnnualInterestRate(), toDocumentMonth(savingsAccount.getLastInterestCalculationDate()));
+            return new SavingsAccountEmbeddedMgd(
+                savingsAccount.getId(),
+                savingsAccount.getOwnerId(),
+                savingsAccount.getCreatedAt(),
+                savingsAccount.getAccountNumber().number(),
+                savingsAccount.getBalance().amount(),
+                toDocumentStatus(savingsAccount.getStatus()),
+                savingsAccount.getAnnualInterestRate(),
+                toDocumentMonth(savingsAccount.getLastInterestCalculationDate())
+            );
         }
 
         throw new IllegalArgumentException("Unsupported account type: " + account.getClass().getName());
@@ -34,11 +51,28 @@ public class AccountMapper {
         Objects.requireNonNull(document, "Account document must not be null");
 
         if (document instanceof PersonalAccountEmbeddedMgd personalAccount) {
-            return new PersonalAccount(personalAccount.getId(), personalAccount.getOwnerId(), personalAccount.getCreatedAt(), new AccountNumber(personalAccount.getAccountNumber()), new Money(personalAccount.getBalance()), toDomainStatus(personalAccount.getStatus()), toDomainTier(personalAccount.getAccountTier()));
+            return new PersonalAccount(
+                personalAccount.getId(),
+                personalAccount.getOwnerId(),
+                personalAccount.getCreatedAt(),
+                new AccountNumber(personalAccount.getAccountNumber()),
+                new Money(personalAccount.getBalance()),
+                toDomainStatus(personalAccount.getStatus()),
+                toDomainTier(personalAccount.getAccountTier())
+            );
         }
 
         if (document instanceof SavingsAccountEmbeddedMgd savingsAccount) {
-            return new SavingsAccount(savingsAccount.getId(), savingsAccount.getOwnerId(), savingsAccount.getCreatedAt(), new AccountNumber(savingsAccount.getAccountNumber()), new Money(savingsAccount.getBalance()), toDomainStatus(savingsAccount.getStatus()), savingsAccount.getAnnualInterestRate(), toDomainMonth(savingsAccount.getLastInterestCalculationDate()));
+            return new SavingsAccount(
+                savingsAccount.getId(),
+                savingsAccount.getOwnerId(),
+                savingsAccount.getCreatedAt(),
+                new AccountNumber(savingsAccount.getAccountNumber()),
+                new Money(savingsAccount.getBalance()),
+                toDomainStatus(savingsAccount.getStatus()),
+                savingsAccount.getAnnualInterestRate(),
+                toDomainMonth(savingsAccount.getLastInterestCalculationDate())
+            );
         }
 
         throw new IllegalArgumentException("Unsupported account document type: " + document.getClass().getName());

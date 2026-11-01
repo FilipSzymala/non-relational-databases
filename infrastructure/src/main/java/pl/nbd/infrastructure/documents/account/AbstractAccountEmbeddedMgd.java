@@ -22,7 +22,14 @@ public abstract class AbstractAccountEmbeddedMgd {
     private final BigDecimal balance;
     private final AccountStatus status;
 
-    protected AbstractAccountEmbeddedMgd(UUID id, UUID ownerId, Instant createdAt, String accountNumber, BigDecimal balance, AccountStatus status) {
+    protected AbstractAccountEmbeddedMgd(
+        UUID id,
+        UUID ownerId,
+        Instant createdAt,
+        String accountNumber,
+        BigDecimal balance,
+        AccountStatus status
+                                        ) {
         this.id = id;
         this.ownerId = ownerId;
         this.createdAt = createdAt;

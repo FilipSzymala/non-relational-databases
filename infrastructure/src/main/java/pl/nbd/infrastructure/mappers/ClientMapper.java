@@ -15,8 +15,21 @@ public class ClientMapper {
     public ClientEmbeddedMgd toDocument(Client client) {
         Objects.requireNonNull(client, "Client must not be null");
         PersonalIdMgd personalIdMgd = new PersonalIdMgd(client.getPersonalId().value());
-        AddressMgd addressMgd = new AddressMgd(client.getAddress().country(), client.getAddress().city(), client.getAddress().street(), client.getAddress().streetNumber(), client.getAddress().apartmentNumber(), client.getAddress().zipCode());
-        return new ClientEmbeddedMgd(client.getId(), client.getFirstName(), client.getLastName(), personalIdMgd, addressMgd);
+        AddressMgd addressMgd = new AddressMgd(
+            client.getAddress().country(),
+            client.getAddress().city(),
+            client.getAddress().street(),
+            client.getAddress().streetNumber(),
+            client.getAddress().apartmentNumber(),
+            client.getAddress().zipCode()
+        );
+        return new ClientEmbeddedMgd(
+            client.getId(),
+            client.getFirstName(),
+            client.getLastName(),
+            personalIdMgd,
+            addressMgd
+        );
     }
 
     public Client toDomain(ClientEmbeddedMgd document, List<Account> accounts) {
@@ -25,10 +38,24 @@ public class ClientMapper {
 
         AddressMgd addressMgd = document.getAddress();
 
-        Address address = new Address(addressMgd.getCountry(), addressMgd.getCity(), addressMgd.getStreet(), addressMgd.getStreetNumber(), addressMgd.getApartmentNumber(), addressMgd.getZipCode());
+        Address address = new Address(
+            addressMgd.getCountry(),
+            addressMgd.getCity(),
+            addressMgd.getStreet(),
+            addressMgd.getStreetNumber(),
+            addressMgd.getApartmentNumber(),
+            addressMgd.getZipCode()
+        );
 
         PersonalId personalId = new PersonalId(document.getPersonalId().getValue());
 
-        return new Client(document.getId(), document.getFirstName(), document.getLastName(), personalId, address, accounts);
+        return new Client(
+            document.getId(),
+            document.getFirstName(),
+            document.getLastName(),
+            personalId,
+            address,
+            accounts
+        );
     }
 }

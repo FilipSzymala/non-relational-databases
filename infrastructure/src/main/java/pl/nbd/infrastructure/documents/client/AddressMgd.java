@@ -15,7 +15,14 @@ public class AddressMgd {
     private String zipCode;
 
     @BsonCreator
-    public AddressMgd(@BsonProperty("country") String country, @BsonProperty("city") String city, @BsonProperty("street") String street, @BsonProperty("street_number") String streetNumber, @BsonProperty("apartment_number") String apartmentNumber, @BsonProperty("zip_code") String zipCode) {
+    public AddressMgd(
+        @BsonProperty("country") String country,
+        @BsonProperty("city") String city,
+        @BsonProperty("street") String street,
+        @BsonProperty("street_number") String streetNumber,
+        @BsonProperty("apartment_number") String apartmentNumber,
+        @BsonProperty("zip_code") String zipCode
+                     ) {
         this.country = country;
         this.city = city;
         this.street = street;

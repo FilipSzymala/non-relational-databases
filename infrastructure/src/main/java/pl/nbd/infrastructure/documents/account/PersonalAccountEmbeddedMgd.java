@@ -17,7 +17,15 @@ public class PersonalAccountEmbeddedMgd extends AbstractAccountEmbeddedMgd {
     private final AccountTier accountTier;
 
     @BsonCreator
-    public PersonalAccountEmbeddedMgd(@BsonId UUID id, @BsonProperty("owner_id") UUID ownerId, @BsonProperty("created_at") Instant createdAt, @BsonProperty("account_number") String accountNumber, @BsonProperty("balance") BigDecimal balance, @BsonProperty("status") AccountStatus status, @BsonProperty("account_tier") AccountTier accountTier) {
+    public PersonalAccountEmbeddedMgd(
+        @BsonId UUID id,
+        @BsonProperty("owner_id") UUID ownerId,
+        @BsonProperty("created_at") Instant createdAt,
+        @BsonProperty("account_number") String accountNumber,
+        @BsonProperty("balance") BigDecimal balance,
+        @BsonProperty("status") AccountStatus status,
+        @BsonProperty("account_tier") AccountTier accountTier
+                                     ) {
         super(id, ownerId, createdAt, accountNumber, balance, status);
         this.accountTier = accountTier;
     }

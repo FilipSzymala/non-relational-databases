@@ -18,7 +18,16 @@ public class SavingsAccountEmbeddedMgd extends AbstractAccountEmbeddedMgd {
     private final String lastInterestCalculationDate;
 
     @BsonCreator
-    public SavingsAccountEmbeddedMgd(@BsonId UUID id, @BsonProperty("owner_id") UUID ownerId, @BsonProperty("created_at") Instant createdAt, @BsonProperty("account_number") String accountNumber, @BsonProperty("balance") BigDecimal balance, @BsonProperty("status") AccountStatus status, @BsonProperty("annual_interest_rate") BigDecimal annualInterestRate, @BsonProperty("last_interest_calculcation_date") String lastInterestCalculationDate) {
+    public SavingsAccountEmbeddedMgd(
+        @BsonId UUID id,
+        @BsonProperty("owner_id") UUID ownerId,
+        @BsonProperty("created_at") Instant createdAt,
+        @BsonProperty("account_number") String accountNumber,
+        @BsonProperty("balance") BigDecimal balance,
+        @BsonProperty("status") AccountStatus status,
+        @BsonProperty("annual_interest_rate") BigDecimal annualInterestRate,
+        @BsonProperty("last_interest_calculcation_date") String lastInterestCalculationDate
+                                    ) {
         super(id, ownerId, createdAt, accountNumber, balance, status);
         this.annualInterestRate = annualInterestRate;
         this.lastInterestCalculationDate = lastInterestCalculationDate;

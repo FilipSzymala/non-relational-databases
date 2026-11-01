@@ -18,7 +18,13 @@ public class ClientEmbeddedMgd {
     private final AddressMgd address;
 
     @BsonCreator
-    public ClientEmbeddedMgd(@BsonId UUID id, @BsonProperty("first_name") String firstName, @BsonProperty("last_name") String lastName, @BsonProperty("personal_id") PersonalIdMgd personalId, @BsonProperty("address") AddressMgd address) {
+    public ClientEmbeddedMgd(
+        @BsonId UUID id,
+        @BsonProperty("first_name") String firstName,
+        @BsonProperty("last_name") String lastName,
+        @BsonProperty("personal_id") PersonalIdMgd personalId,
+        @BsonProperty("address") AddressMgd address
+                            ) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
