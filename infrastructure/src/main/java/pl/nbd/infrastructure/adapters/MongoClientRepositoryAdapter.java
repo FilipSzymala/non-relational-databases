@@ -8,6 +8,7 @@ import pl.nbd.infrastructure.mappers.AccountMapper;
 import pl.nbd.infrastructure.mappers.ClientMapper;
 import pl.nbd.infrastructure.repositories.MongoAccountRepository;
 import pl.nbd.infrastructure.repositories.MongoClientRepository;
+import pl.nbd.infrastructure.util.MongoTransactionExecutor;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -34,6 +35,12 @@ public class MongoClientRepositoryAdapter implements ClientRepository {
 
     @Override
     public Optional<Client> findById(UUID id) {
+        if (!clients.isSessionBound()) {
+            return new MongoTransactionExecutor(clients.getMongoClient()).execute(repositories ->
+                repositories.clients().findById(id)
+            );
+        }
+
         return clients.findById(id).map(this::toDomain);
     }
 
@@ -41,12 +48,26 @@ public class MongoClientRepositoryAdapter implements ClientRepository {
     public Optional<Client> findByPersonalId(PersonalId personalId) {
         Objects.requireNonNull(personalId, "Personal ID must not be null");
 
+        if (!clients.isSessionBound()) {
+            return new MongoTransactionExecutor(clients.getMongoClient()).execute(repositories ->
+                repositories.clients().findByPersonalId(personalId)
+            );
+        }
+
         return clients.findByPersonalId(personalId.value()).map(this::toDomain);
     }
 
     @Override
     public void save(Client client) {
         Objects.requireNonNull(client, "Client must not be null");
+
+        if (!clients.isSessionBound()) {
+            new MongoTransactionExecutor(clients.getMongoClient()).execute(repositories -> {
+                repositories.clients().save(client);
+                return null;
+            });
+            return;
+        }
 
         clients.save(clientMapper.toDocument(client));
 
@@ -58,6 +79,14 @@ public class MongoClientRepositoryAdapter implements ClientRepository {
     @Override
     public void deleteById(UUID id) {
         Objects.requireNonNull(id, "Client id must not be null");
+
+        if (!clients.isSessionBound()) {
+            new MongoTransactionExecutor(clients.getMongoClient()).execute(repositories -> {
+                repositories.clients().deleteById(id);
+                return null;
+            });
+            return;
+        }
 
         if (!accounts.findByOwnerId(id).isEmpty()) {
             throw new IllegalStateException("Cannot delete a client with existing accounts");

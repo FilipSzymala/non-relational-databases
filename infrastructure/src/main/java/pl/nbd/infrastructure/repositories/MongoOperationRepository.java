@@ -1,11 +1,13 @@
 package pl.nbd.infrastructure.repositories;
 
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import org.bson.BsonDocument;
 import org.bson.BsonDocumentReader;
 import org.bson.codecs.DecoderContext;
+import org.bson.conversions.Bson;
 import pl.nbd.infrastructure.documents.operation.AbstractOperationEmbeddedMgd;
 import pl.nbd.infrastructure.documents.operation.AtmDepositEmbeddedMgd;
 import pl.nbd.infrastructure.documents.operation.AtmWithdrawEmbeddedMgd;
@@ -29,11 +31,17 @@ public class MongoOperationRepository extends AbstractMongoRepository {
     private final MongoCollection<AtmWithdrawEmbeddedMgd> withdrawals;
     private final MongoCollection<InterestCapitalizationEmbeddedMgd> capitalizations;
     private final MongoCollection<TransferEmbeddedMgd> transfers;
+    private final ClientSession session;
 
     public MongoOperationRepository(MongoClient mongoClient) {
-        super(mongoClient);
+        this(mongoClient, null);
+    }
 
-        var database = mongoClient.getDatabase("bank");
+    public MongoOperationRepository(MongoClient mongoClient, ClientSession session) {
+        super(mongoClient);
+        this.session = session;
+
+        var database = getDatabase();
         this.operations = database.getCollection("operations", BsonDocument.class);
         this.deposits = database.getCollection("operations", AtmDepositEmbeddedMgd.class);
         this.withdrawals = database.getCollection("operations", AtmWithdrawEmbeddedMgd.class);
@@ -45,53 +53,61 @@ public class MongoOperationRepository extends AbstractMongoRepository {
         Objects.requireNonNull(operation, "Operation must not be null");
 
         if (operation instanceof AtmDepositEmbeddedMgd deposit) {
-            deposits.insertOne(deposit);
+            insert(deposits, deposit);
             return;
         }
 
         if (operation instanceof AtmWithdrawEmbeddedMgd withdraw) {
-            withdrawals.insertOne(withdraw);
+            insert(withdrawals, withdraw);
             return;
         }
 
         if (operation instanceof InterestCapitalizationEmbeddedMgd capitalization) {
-            capitalizations.insertOne(capitalization);
+            insert(capitalizations, capitalization);
             return;
         }
 
         if (operation instanceof TransferEmbeddedMgd transfer) {
-            transfers.insertOne(transfer);
+            insert(transfers, transfer);
             return;
         }
 
         throw new IllegalArgumentException("Unsupported operation type: " + operation.getClass().getName());
     }
 
+    private <T extends AbstractOperationEmbeddedMgd> void insert(MongoCollection<T> collection, T operation) {
+        if (session == null) {
+            collection.insertOne(operation);
+        } else {
+            collection.insertOne(session, operation);
+        }
+    }
+
     public Optional<AbstractOperationEmbeddedMgd> findById(UUID id) {
         Objects.requireNonNull(id, "Operation id must not be null");
 
-        BsonDocument document = operations.find(eq("_id", id)).first();
-
-        return Optional.ofNullable(document).map(this::decode);
+        return Optional.ofNullable(find(eq("_id", id)).first()).map(this::decode);
     }
 
     public List<AbstractOperationEmbeddedMgd> findByAccountId(UUID accountId) {
         Objects.requireNonNull(accountId, "Account id must not be null");
 
-        return decodeAll(operations.find(or(
+        return decodeAll(find(or(
             eq("account_id", accountId),
             eq("source_account_id", accountId),
             eq("target_account_id", accountId)
-                                           )).sort(ascending("occurred_at", "_id")));
+        )).sort(ascending("occurred_at", "_id")));
     }
 
     public List<AbstractOperationEmbeddedMgd> findAll() {
-        return decodeAll(operations.find().sort(ascending("occurred_at", "_id")));
+        return decodeAll(find(new BsonDocument()).sort(ascending("occurred_at", "_id")));
     }
 
-    private List<AbstractOperationEmbeddedMgd> decodeAll(
-        FindIterable<BsonDocument> documents
-                                                        ) {
+    private FindIterable<BsonDocument> find(Bson filter) {
+        return session == null ? operations.find(filter) : operations.find(session, filter);
+    }
+
+    private List<AbstractOperationEmbeddedMgd> decodeAll(FindIterable<BsonDocument> documents) {
         List<AbstractOperationEmbeddedMgd> result = new ArrayList<>();
 
         for (BsonDocument document : documents) {
