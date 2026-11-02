@@ -86,7 +86,7 @@ public class MongoAccountRepository extends AbstractMongoRepository {
     public Optional<AbstractAccountEmbeddedMgd> findById(UUID id) {
         Objects.requireNonNull(id, "Account id must not be null");
 
-        BsonDocument document = accounts.find(eq("_id", id)).first();
+        BsonDocument document = find(eq("_id", id)).first();
 
         return Optional.ofNullable(document).map(this::decode);
     }
@@ -94,7 +94,7 @@ public class MongoAccountRepository extends AbstractMongoRepository {
     public Optional<AbstractAccountEmbeddedMgd> findByAccountNumber(String accountNumber) {
         Objects.requireNonNull(accountNumber, "Account number must not be null");
 
-        BsonDocument document = accounts.find(eq("account_number", accountNumber)).first();
+        BsonDocument document = find(eq("account_number", accountNumber)).first();
 
         return Optional.ofNullable(document).map(this::decode);
     }
@@ -102,7 +102,7 @@ public class MongoAccountRepository extends AbstractMongoRepository {
     public List<AbstractAccountEmbeddedMgd> findByOwnerId(UUID ownerId) {
         Objects.requireNonNull(ownerId, "Owner id must not be null");
 
-        return decodeAll(accounts.find(eq("owner_id", ownerId)));
+        return decodeAll(find(eq("owner_id", ownerId)));
     }
 
     public List<AbstractAccountEmbeddedMgd> findAll() {
