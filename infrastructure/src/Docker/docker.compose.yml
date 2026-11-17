@@ -1,6 +1,15 @@
 name: mongo_nbd_ex2
 
 services:
+    redis-stack:
+        image: redis/redis-stack:7.4.0-v3
+        volumes:
+            - redis-stack-data:/bitnami/redis/data
+        ports:
+            - "127.0.0.1:8001:8001"
+            - "127.0.0.1:6379:6379"
+        networks:
+            - redisnet
     mongo_1:
         build: .
         image: mongo_nbd_ex2:9.0.4
@@ -103,8 +112,11 @@ services:
 
 networks:
     mongonet: {}
+    redisnet: {}
 
 volumes:
+    redis-stack-data:
+        driver: local
     mongo-db-data-1:
     mongo-configdb-data-1:
     mongo-db-data-2:
