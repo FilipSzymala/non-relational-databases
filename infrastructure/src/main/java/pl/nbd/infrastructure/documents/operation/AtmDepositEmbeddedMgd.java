@@ -1,5 +1,7 @@
 package pl.nbd.infrastructure.documents.operation;
 
+import jakarta.json.bind.annotation.JsonbCreator;
+import jakarta.json.bind.annotation.JsonbProperty;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonId;
@@ -17,7 +19,13 @@ public class AtmDepositEmbeddedMgd extends AbstractOperationEmbeddedMgd {
     private final String atmId;
 
     @BsonCreator
-    public AtmDepositEmbeddedMgd(@BsonId UUID id, @BsonProperty("occurred_at") Instant occurredAt, @BsonProperty("amount") BigDecimal amount, @BsonProperty("account_id") UUID accountId, @BsonProperty("atm_id") String atmId) {
+    @JsonbCreator
+    public AtmDepositEmbeddedMgd(
+        @BsonId @JsonbProperty("id") UUID id,
+        @BsonProperty("occurred_at") @JsonbProperty("occurredAt") Instant occurredAt,
+        @BsonProperty("amount") @JsonbProperty("amount") BigDecimal amount,
+        @BsonProperty("account_id") @JsonbProperty("accountId") UUID accountId,
+        @BsonProperty("atm_id") @JsonbProperty("atmId") String atmId) {
         super(id, occurredAt, amount);
         this.accountId = accountId;
         this.atmId = atmId;
