@@ -13,6 +13,15 @@
         <module>infrastructure</module>
     </modules>
 
+    <profiles>
+        <profile>
+            <id>benchmarks</id>
+            <modules>
+                <module>benchmarks</module>
+            </modules>
+        </profile>
+    </profiles>
+
     <properties>
         <maven.compiler.source>27</maven.compiler.source>
         <maven.compiler.target>27</maven.compiler.target>
