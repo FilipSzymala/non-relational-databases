@@ -1,6 +1,17 @@
 # NBD
 
-## ZADANIE 2
+## ZADANIE 3
+
+Zadanie to jest modyfikacją zadania 2 polegającą na dodaniu funkcjonalności cache dla wybranych danych.
+
+1. Zaproponuj jeden ze zbiorów danych (kolekcji w MongoDB), które należałoby trzymać w cache’u i jak długo - uzasadnij
+2. Zaimplementuj metody do cache’owania danych i do pobierania danych z cache’a.
+3. Zaproponuj kiedy i gdzie powinny być odświeżane dane w cache’u (inwalidacja cache’a). Pamiętaj, aby zadbać o to, aby dane w Redisie i MongoDB były aktualne.
+4. Zaimplementuj komponent adaptera dla Redis wykorzystujący jeden z interfejsów (dla wybranego zbioru danych). Zastosuj wzorzec dekoratora.
+    1. Dodaj w niem metody do usuwania danych z cache’a (unieważnienie danych cache).
+    2. Implementacja metod musi przewidywać failover, tzn. jeżeli nie ma połączenia z Redis, to operacje są wykonywane na MongoDB.
+5. Zaimplementuj testy jednostkowe dla metody: dodającej dane do Redisa oraz odczytującej dane z Redisa.
+6. Wykonaj testy wydajnościowe czytania danych z bazy danych i cache. Porównaj i omów uzyskane wyniki, w przypadku trafienia i nie (dana była w cache i gdy jej nie było - do tego celu użyj metody unieważniającej cache). Jakie były dodatkowe opóźnienia. Dla Java testy wykonaj poprzez JMH (Java Microbenchmark Harness). Dla innych języków programowania wybierz bibliotekę o podobnych możliwściach jak JMH.
 
 Pamiętaj o zachowaniu dziedzinowego modelu danych jak i interfejsów adapterów
 
