@@ -1,0 +1,170 @@
+# JMH version: 1.37
+# VM version: JDK 27.0.1.0.3, OpenJDK 64-Bit Server VM, 27.0.1.0.3+5
+# VM invoker: /home/szymczok/.jdks/liberica-full-27.0.1.0.3/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: pl.nbd.benchmarks.OperationBenchmark.read
+# Parameters: (source = mongo)
+
+# Run progress: 0.00% complete, ETA 00:00:48
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/szymczok/Dokumenty/studia/NBD/non-relational-databases/benchmarks/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 2777.423 us/op
+# Warmup Iteration   2: 1265.390 us/op
+# Warmup Iteration   3: 958.183 us/op
+Iteration   1: 512.071 us/op
+Iteration   2: 389.719 us/op
+Iteration   3: 482.695 us/op
+Iteration   4: 759.163 us/op
+Iteration   5: 590.513 us/op
+
+# Run progress: 16.67% complete, ETA 00:00:47
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/szymczok/Dokumenty/studia/NBD/non-relational-databases/benchmarks/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 1655.665 us/op
+# Warmup Iteration   2: 928.551 us/op
+# Warmup Iteration   3: 445.609 us/op
+Iteration   1: 738.463 us/op
+Iteration   2: 538.655 us/op
+Iteration   3: 261.965 us/op
+Iteration   4: 314.221 us/op
+Iteration   5: 230.594 us/op
+
+
+Result "pl.nbd.benchmarks.OperationBenchmark.read":
+  481.806 ±(99.9%) 279.122 us/op [Average]
+  (min, avg, max) = (230.594, 481.806, 759.163), stdev = 184.622
+  CI (99.9%): [202.684, 760.928] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 27.0.1.0.3, OpenJDK 64-Bit Server VM, 27.0.1.0.3+5
+# VM invoker: /home/szymczok/.jdks/liberica-full-27.0.1.0.3/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: pl.nbd.benchmarks.OperationBenchmark.read
+# Parameters: (source = hit)
+
+# Run progress: 33.33% complete, ETA 00:00:37
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/szymczok/Dokumenty/studia/NBD/non-relational-databases/benchmarks/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 326.688 us/op
+# Warmup Iteration   2: 104.428 us/op
+# Warmup Iteration   3: 79.489 us/op
+Iteration   1: 61.569 us/op
+Iteration   2: 65.814 us/op
+Iteration   3: 80.970 us/op
+Iteration   4: 48.321 us/op
+Iteration   5: 41.899 us/op
+
+# Run progress: 50.00% complete, ETA 00:00:27
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/szymczok/Dokumenty/studia/NBD/non-relational-databases/benchmarks/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 325.678 us/op
+# Warmup Iteration   2: 166.232 us/op
+# Warmup Iteration   3: 158.487 us/op
+Iteration   1: 112.326 us/op
+Iteration   2: 106.136 us/op
+Iteration   3: 78.164 us/op
+Iteration   4: 64.728 us/op
+Iteration   5: 46.857 us/op
+
+
+Result "pl.nbd.benchmarks.OperationBenchmark.read":
+  70.678 ±(99.9%) 36.310 us/op [Average]
+  (min, avg, max) = (41.899, 70.678, 112.326), stdev = 24.017
+  CI (99.9%): [34.368, 106.989] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 27.0.1.0.3, OpenJDK 64-Bit Server VM, 27.0.1.0.3+5
+# VM invoker: /home/szymczok/.jdks/liberica-full-27.0.1.0.3/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: pl.nbd.benchmarks.OperationBenchmark.read
+# Parameters: (source = miss)
+
+# Run progress: 66.67% complete, ETA 00:00:18
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/szymczok/Dokumenty/studia/NBD/non-relational-databases/benchmarks/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 2145.319 us/op
+# Warmup Iteration   2: 1716.022 us/op
+# Warmup Iteration   3: 1420.099 us/op
+Iteration   1: 849.898 us/op
+Iteration   2: 620.819 us/op
+Iteration   3: 616.872 us/op
+Iteration   4: 632.392 us/op
+Iteration   5: 445.808 us/op
+
+# Run progress: 83.33% complete, ETA 00:00:09
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/szymczok/Dokumenty/studia/NBD/non-relational-databases/benchmarks/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 1587.295 us/op
+# Warmup Iteration   2: 822.720 us/op
+# Warmup Iteration   3: 531.379 us/op
+Iteration   1: 431.211 us/op
+Iteration   2: 360.870 us/op
+Iteration   3: 361.532 us/op
+Iteration   4: 358.964 us/op
+Iteration   5: 326.017 us/op
+
+
+Result "pl.nbd.benchmarks.OperationBenchmark.read":
+  500.438 ±(99.9%) 259.215 us/op [Average]
+  (min, avg, max) = (326.017, 500.438, 849.898), stdev = 171.455
+  CI (99.9%): [241.223, 759.653] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:00:54
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                (source)  Mode  Cnt    Score     Error  Units
+OperationBenchmark.read     mongo  avgt   10  481.806 ± 279.122  us/op
+OperationBenchmark.read       hit  avgt   10   70.678 ±  36.310  us/op
+OperationBenchmark.read      miss  avgt   10  500.438 ± 259.215  us/op
+
+Benchmark result is saved to docs/redis-results/jmh.json
