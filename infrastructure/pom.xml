@@ -18,6 +18,7 @@
         <mongodb-driver-sync.version>5.13.0</mongodb-driver-sync.version>
         <mongodb-crypt.version>5.13.0</mongodb-crypt.version>
         <logback-classic.version>1.6.5</logback-classic.version>
+        <yasson.version>3.0.4</yasson.version>
     </properties>
 
     <dependencies>
@@ -36,6 +37,11 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <version>${yasson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
